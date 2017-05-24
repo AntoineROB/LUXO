@@ -1,0 +1,6 @@
+couleur points
+printf test enlevé
+rajout zone enum
+rajout verif zone -> cas -1,-1 ??
+lim limites
+rajouter zonezoom
