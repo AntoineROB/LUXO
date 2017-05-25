@@ -17,7 +17,14 @@
 #include <time.h>
 #include <unistd.h>
 
-
+/**
+*   \struct ball
+*	\brief Structure de la balle
+* 
+*	Possède 3 champs :
+*	les coordonéees de son barycentre ainsi que le rayon
+* 	
+*/
 typedef struct ball
 {
 	int x;
@@ -25,6 +32,15 @@ typedef struct ball
 	int r;
 } t_ball;
 
+
+/**
+*   \struct t_dImg
+*	\brief Structure regroupant les données sur l'image capturée
+* 
+*	Possède 3 champs :
+*	La hauteur, la largeur et la taille en nombre de pixels
+* 	
+*/
 typedef struct donneesImg
 {
 	int hauteur;
@@ -32,13 +48,31 @@ typedef struct donneesImg
 	CvSize taille;
 } t_dImg;
 
+
+/**
+*   \enum t_mode
+*	\brief Structure du choix du mode
+* 
+*	Possède 2 champs :
+*	SUIVI : la caméra suit la balle
+*	JEU : on lance le jeu
+* 	
+*/
 typedef enum type_mode
 {
 	SUIVI=0,
 	JEU=1
 } t_mode;
 
-//Structure coordonnées
+
+/**
+*   \struct t_Coord
+*	\brief Structure coordonnées
+* 
+*	Possède 2 champs :
+*	x et y, les coordonnées sont en pixels
+* 	
+*/
 typedef struct _t_Coord
 {
 	int x;
@@ -46,7 +80,15 @@ typedef struct _t_Coord
 	
 } t_Coord;
 
-//structure zone
+
+/**
+*   \struct t_lim
+*	\brief Structure servant à la définition des zones, on regroupe toutes les limites nécessaires
+* 
+*	Possède 10 champs :
+*	Chaque champs correspond à une limite utile, pour rappel les dimensions sont 640*480 
+* 	
+*/
 typedef struct _t_lim
 {
 	int l1;
@@ -60,6 +102,16 @@ typedef struct _t_lim
 	int l9;
 	int l10;
 } t_lim;
+
+/**
+*   \enum t_zone
+*	\brief Enumération des zones
+* 
+*	Possède 6 champs :
+*	aucune, gauche, haut, droite, bas, zoom
+*	Ainsi on peut dire dans quelle notre balle se trouve
+* 	
+*/
 typedef enum _t_zone
 {
 	aucune=0,

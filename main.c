@@ -30,16 +30,19 @@ IplImage *image;
 
 
  
-// Position of the object we overlay
+// Position de notre objet
 CvPoint objectPos = cvPoint(-1, -1);
-// Color tracked and our tolerance towards it
+// La couleur que l'on cherche et notre tolérance
 int h = 0, s = 0, v = 0, tolerance = 10;
 
-/*
- * Transform the image into a two colored image, one color for the color we want to track, another color for the others colors
- * From this image, we get two datas : the number of pixel detected, and the center of gravity of these pixel
- */
 
+/**
+*   \fn binarisation
+*	\brief Fonction transforme l'image en deux images colorées, l'une de la couleur que nous voulons suivre, l'autre composée des autres couleurs
+* 
+*	On renvoie également le nombre de pixels détectés et le barycentre
+*
+*/
 CvPoint binarisation(IplImage* image, int *nbPixels) {
  
     int x, y;
@@ -97,10 +100,14 @@ CvPoint binarisation(IplImage* image, int *nbPixels) {
         return cvPoint(-1, -1);
 }
 
-/*
- * Add a circle on the video that fellow your colored object
- */
 
+/**
+*   \fn addObjectToVideo
+*	\brief Fonction qui trace un cercle pour repérer notre objet
+* 
+*	Nous utilisons cvDrawCircle et le barycentre de l'objet
+*
+*/
 void addObjectToVideo(IplImage* image, CvPoint objectNextPos, int nbPixels) {
  
     int objectNextStepX, objectNextStepY;
@@ -141,10 +148,14 @@ void addObjectToVideo(IplImage* image, CvPoint objectNextPos, int nbPixels) {
  
 }
 
-/*
- * Get the color of the pixel where the mouse has clicked
- * We put this color as model color (the color we want to tracked)
- */
+
+/**
+*   \fn getOjectColor
+*	\brief Fonction qui récupère la couleur de l'objet à suivre
+* 
+*	Elle réagit au clic de la souris et récupère les valeurs de la couleur à suivre
+*
+*/
 void getObjectColor(int event, int x, int y, int flags, void *param) {
  
     // Vars
@@ -173,6 +184,11 @@ void getObjectColor(int event, int x, int y, int flags, void *param) {
 }
 
 /*********************************CONTROLE MOTEURS***********************************/
+/**
+*   \fn getCoordCentre
+*	\brief Fonction qui récupère le centre de l'image
+*
+*/
 void getCoordCentre(IplImage *image, t_Coord *centreImg)
 {
 	centreImg->x= image->width/2;
@@ -190,40 +206,44 @@ void getCoordCentre(IplImage *image, t_Coord *centreImg)
 
 
 
-
+/**
+*   \fn main
+*	\brief Fonction générale qui lance notre programme
+*
+*/
 int main() {
+	/*On créer notre mode pour le programme et on le choisit entre SUIVI et JEU*/
 	int mode;
 	mode = JEU;
 
 
+	/*----------Initialisation capture vidéo et fenêtre pour le tracking----------------*/
     // Video Capture
     CvCapture *capture;
     // Key for keyboard event
     char key;
- 
     // Number of tracked pixels
     int nbPixels;
     // Next position of the object we overlay
     CvPoint objectNextPos;
- 
     // On initialise le flux vidéo par rapport à la camera 0 ou 1
     capture = cvCreateCameraCapture(1);
-    
     // Check if the capture is ok
         if (!capture) {
         printf("Can't initialize the video capture.\n");
             return -1;
     }
- 
     // Create the windows
     cvNamedWindow("Luxo Color Tracking", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("Luxo Mask", CV_WINDOW_AUTOSIZE);
     cvMoveWindow("Luxo Color Tracking", 0, 100);
     cvMoveWindow("Luxo Mask", 650, 100);
+    /*----------------------------------------------------------------------------------*/
     
+
+    /*-------------Déclarations nécéssaires au mode SUIVI------------*/
     //coordonnées centreImg
 	t_Coord *centreImg = (t_Coord*) malloc(sizeof(t_Coord));
-
 	// déplacement camera
 	int tolerance;
 	float step;
@@ -232,9 +252,10 @@ int main() {
 	int diff;
 	float increment;
 	float facteur=0.001;
-	//.............................
+	/*-----------------------------------------------------------*/
 
-	//Mode JEU déclaration
+
+	/*-------------Déclarations nécéssaires au mode JEU------------*/
 	int nbPos=20;
 	t_Coord* buffer=creer_buffer(nbPos); 
 	int index=0;
@@ -251,19 +272,32 @@ int main() {
 	limites.l8=480;
 	limites.l9=560;
 	limites.l10=640;
+	/*----------------------------------------------------------*/
 	
-	//.............................
+
  	
+
     // Mouse event to select the tracked color on the original image
     cvSetMouseCallback("Luxo Color Tracking", getObjectColor);
 
 
 
+
+
+
+
+
+
+
+
+
+
+    /* Switch qui gère nos deux modes */
 	switch(mode)
 	{
 		case SUIVI :
 
-			//fichier
+			/*Ouverture du fichier pour écrire sur la carte et commander nos servos*/
 		 	FILE *control_servo;
 		 	control_servo = fopen ("/dev/ttyACM0","w");
 		 	if (control_servo==NULL)
@@ -275,9 +309,9 @@ int main() {
 	  
 		
 
-			// On donne une position initiale à la caméra
+			/* Position initiale de la caméra */
 		  	float servo_old[2];
-		  	servo_old[0]=60;//gère x p5	//En faisant des tests on a trouvé que c'était une position extrême
+		  	servo_old[0]=60;//gère x p5
 		  	servo_old[1]=60;//gère y p4
 		    fprintf(control_servo, "%d,%d\n", (int) servo_old[0], (int) servo_old[1]);
 		    getchar();
@@ -362,15 +396,15 @@ int main() {
 		        // We get the current image
 		        image = cvQueryFrame(capture);
 		        getCoordCentre(image, centreImg);
-		        
 		        // If there is no image, we exit the loop
 		        if(!image)
 		            continue;
-		 
+		 		
+		 		/*On binarise l'image*/
 		        objectNextPos = binarisation(image, &nbPixels);
 		        addObjectToVideo(image, objectNextPos, nbPixels);
 		        
-		        //Maintenant on appelle la fonction qui va nous permettre de garder l'objet au centre de l'imageint 
+		        //On récupère les coordonnées de l'objet et du centre de l'image
 				printf("xcentre=%d\n",centreImg->x);
 				printf("ycentre=%d\n",centreImg->y);
 				printf("xobj=%d\n",objectPos.x);
@@ -381,17 +415,22 @@ int main() {
 			    modif_buffer(index%nbPos, buffer, objectPos);
 			    index++;
 
-			    //tracer chemin
-			    if(cpt>19)
+			    /* On trace le chemin du mouvement */
+			    if(cpt>nbPos-1)
 			    {
 			    	tracer_mouv(buffer, image, index, nbPos);
 		 		}
 		 		cpt++;
 
-
+		 		/* On cherche la zone où on se trouve et on les affiches sur l'image capturée */
 		 		verif_zone(buffer,image, index%nbPos, nbPos,limites,zone);
 		 		afficher_zone(image,zone,limites);
 
+
+
+
+
+		 		/*On affiche l'image*/
 		 		cvShowImage("Luxo Color Tracking", image);
 		 		
 

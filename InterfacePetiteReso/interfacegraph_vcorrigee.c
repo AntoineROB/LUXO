@@ -5,6 +5,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <time.h>
+#include <string.h>
 
 using namespace sf; //Espace de nommage nous permet de ne pas utiliser sf:: à chaque fois
 
@@ -55,11 +56,11 @@ typedef struct T_map
 *	Le nombre de chances qu'on a pour deviner le mot
 * 	Connait également un mot qui permet de sortir du mode proposition sans décompte d'une chance
 */
-typedef struct t_mot
+typedef struct T_mot
 {
 	int nb_caracteres;
 	int nb_chances;
-	char motMystere[nb_caracteres];
+	char motMystere[5];
 	char motSortie[5];
 
 } t_mot;
@@ -78,7 +79,7 @@ int motValide(t_mot *motM, char *tentative[])
 	int vrai=0; //si vrai==0 on veut juste sortir sans proposition, si vrai==1 tentative réussie on pourra sortir du jeu, si vrai==-1 erreur on retire une vie
 	while(compt<motM->nb_caracteres && vrai!=-1)	//on vérifie d'abord si le mot correspond à MotSortie qui nous permet de sortir sans faire de proposition
 	{
-		if(tentative[compt]!=motM->motSortie[compt])
+		if(*tentative[compt]!=motM->motSortie[compt])
 		{
 			vrai=-1;
 		}
@@ -90,7 +91,7 @@ int motValide(t_mot *motM, char *tentative[])
 		vrai=0;
 		while(compt<motM->nb_caracteres && vrai!=-1)
 		{
-			if(tentative[compt]!=motM->motMystere[compt])
+			if(*tentative[compt]!=motM->motMystere[compt])
 			{
 				vrai=-1;
 			}
@@ -477,8 +478,16 @@ int main()
 	t_mot *tM_mystere;
 	tM_mystere->nb_caracteres=5;
 	tM_mystere->nb_chances=3;
-	tM_mystere->mot="pixar";
-	tM_mystere->motSortie="later";
+	tM_mystere->motMystere[0]='p';
+	tM_mystere->motMystere[1]='i';
+	tM_mystere->motMystere[2]='x';
+	tM_mystere->motMystere[3]='a';
+	tM_mystere->motMystere[4]='r';
+	tM_mystere->motSortie[0]='l';
+	tM_mystere->motSortie[1]='a';
+	tM_mystere->motSortie[2]='t';
+	tM_mystere->motSortie[3]='e';
+	tM_mystere->motSortie[4]='r';
 
 /*-------------------------------BOUCLE PRINCIPALE DU JEU ----------------------------*/
 
@@ -537,8 +546,8 @@ int main()
          	 //Dans ce cas si, on va demander au joueur de rentrer un mot et regarder s'il est valide
          	printf("Vous pensez pouvoir sortir ??\n");
          	printf("Alors quel est le mot mystère ?\n");
-         	fgets(motRentre, 5, stdin); //permet de rentrer une chaine de 5 caractères
-         	viderBuffer() //On vide le buffer pour la prochaine execution
+         	fgets(*motRentre, 5, stdin); //permet de rentrer une chaine de 5 caractères
+         	viderBuffer(); //On vide le buffer pour la prochaine execution
 
          	//On appelle ensuite la fonction qui va nous permetttre de voir si le mot est valide
          	exitAutorisee=motValide(tM_mystere,motRentre);

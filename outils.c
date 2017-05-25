@@ -15,6 +15,11 @@
 
 
 //création d'un buffer
+/**
+*   \fn creer_buffer
+*	\brief Fonction qui créer notre buffer de position
+*
+*/
 t_Coord* creer_buffer(int taille)
 {
     t_Coord* buffer=(t_Coord*)malloc(taille*sizeof(t_Coord));
@@ -22,6 +27,13 @@ t_Coord* creer_buffer(int taille)
 }
 
 
+/**
+*   \fn modif_buffer
+*	\brief Fonction qui remplit et modifie notre buffer
+* 
+*	Cette fonction va rajouter un point au buffer
+*
+*/
 void modif_buffer(int i, t_Coord *buffer, CvPoint objectPos)
 {
 	buffer[i].x=objectPos.x;
@@ -29,6 +41,14 @@ void modif_buffer(int i, t_Coord *buffer, CvPoint objectPos)
 	printf("buffer[%d]= %d ; %d\n",i,buffer[i].x,buffer[i].y);
 }
 
+
+/**
+*   \fn tracer_mouv
+*	\brief Fonction qui ajoute les 20 derniers points à l'écran
+* 
+*	Rajoute la trace du mouvement à l'écran
+*
+*/
 void tracer_mouv(t_Coord *buffer, IplImage *image, int index, int nbPos)
 {
 	
@@ -44,7 +64,14 @@ void tracer_mouv(t_Coord *buffer, IplImage *image, int index, int nbPos)
 	}
 }
 
-//fonction qui retourne dans quelle zone on est
+/**
+*   \fn verif_zone
+*	\brief Fonction qui trouve dans quelle zone on se trouve
+* 
+*	Elle modifie l'énum zone en fonction de où l'on se trouve
+*	Les 20 positions du buffer doivent être comprises dans cette zone
+*
+*/
 void verif_zone(t_Coord *buffer, IplImage *image, int i, int nbPos, t_lim limites, t_zone *zone)
 {
 	int j=0;
@@ -136,6 +163,14 @@ void verif_zone(t_Coord *buffer, IplImage *image, int i, int nbPos, t_lim limite
 	}	
 }
 
+
+/**
+*   \fn afficher_zone
+*	\brief Fonction qui affiche les zones à l'écran
+* 
+*	On se sert de t_lim pour afficher les zones
+*
+*/
 void afficher_zone(IplImage*image, t_zone *zone, t_lim limites)
 {
 	CvPoint pt1=CvPoint (limites.l1,limites.l3);
