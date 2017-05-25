@@ -17,6 +17,13 @@
 #include <time.h>
 #include <unistd.h>
 
+///////////////////////////////////////
+
+
+
+ ///////////////////////////
+
+
 /**
 *   \struct ball
 *	\brief Structure de la balle
@@ -118,7 +125,8 @@ typedef enum _t_zone
 	gauche=1,
 	haut=2,
 	droite=3,
-	bas=4
+	bas=4,
+	zoom=5
 } t_zone;
 
 

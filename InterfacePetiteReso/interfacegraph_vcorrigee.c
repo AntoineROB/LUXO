@@ -65,6 +65,11 @@ typedef struct T_mot
 
 } t_mot;
 
+
+
+
+
+
 /**
 *   \fn motValide
 *	\brief Fonction qui vérifie si le mot rentré au clavier correspond au mot mystère
@@ -470,7 +475,7 @@ int main()
 		return 0;
 	}
 
-/*-------------------------------OUVERTURE DE LA FENÊTRE CAMERA + SES VARIABLES --------------------------------*/
+/*-------------------------------OUVERTURE DE LA FENÊTRE CAMERA + SES VARIABLES --------------------------------*///////////////////////////////////////////////////////////
 
 
 /*-------------------------------DECLARATION DU MOT MYSTERE -----------------------------*/
@@ -488,7 +493,7 @@ int main()
 	tM_mystere->motSortie[2]='t';
 	tM_mystere->motSortie[3]='e';
 	tM_mystere->motSortie[4]='r';
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*-------------------------------BOUCLE PRINCIPALE DU JEU ----------------------------*/
 
 	//On commence par initialiser toutes les variables utiles
@@ -496,6 +501,7 @@ int main()
 	char *motRentre[5];
 	int exitAutorisee=-1; //Par défaut on ne peut pas sortir, si on passe à 0 c'est qu'on a débloqué la sortie
 
+/////////////////////////////////////////////////////////////////////////////////////////////
     
     //Boucle principale
     while (ecran.isOpen())
@@ -514,7 +520,7 @@ int main()
 			music.play();
 		}
 
-		//Bouclle qui gère les événements, reste dans la boucle tant qu'elle n'a pas gérer tous les événements
+		//Boucle qui gère les événements, reste dans la boucle tant qu'elle n'a pas gérer tous les événements
         while (ecran.pollEvent(event))
         {            
         	/*Event qui permet de fermer la fenêtre*/
