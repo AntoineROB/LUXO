@@ -1,10 +1,10 @@
 /**
 *   \file main.c
-*   \brief main
+*   \brief Fichier principal du Projet C Pan-tilt
 *   \author Antoine Milot - Tiphaine Diot 
 *   \date Avril/Mai 2017
 *
-*
+*   Ce fichier comprant des structures et des fonctions utiles au projet, pour la figure libre et la figure imposée. 
 */
 
 #include "recognition.h"
@@ -30,18 +30,13 @@ using namespace sf; //Espace de nommage nous permet de ne pas utiliser sf:: à c
 #define STEP_MAX 100 
 
 IplImage *image;
-
-
-
-
  
 // Position de notre objet
 CvPoint objectPos = cvPoint(-1, -1);
 // La couleur que l'on cherche et notre tolérance
 int h = 0, s = 0, v = 0, tolerance = 10;
 
-
-
+/***********INTERFACE*********************/
 
 /**
 *   \struct t_image
@@ -98,12 +93,7 @@ typedef struct T_mot
 
 } t_mot;
 
-
-
-
-
-
-
+/********FONCTION TRAITEMENT D'IMAGES CAMERA***********/
 
 /**
 *   \fn binarisation
@@ -265,7 +255,7 @@ void getCoordCentre(IplImage *image, t_Coord *centreImg)
 }
 
 
-/***************************Focntion pour interface graphique***************************************/
+/***************************Fonction utiles pour le jeu***************************************/
 /**
 *   \fn motValide
 *	\brief Fonction qui vérifie si le mot rentré au clavier correspond au mot mystère
@@ -323,13 +313,7 @@ void viderBuffer()
     }
 }
 
-/*--------------------------------------------------------*/
-
-
-
-
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 /**
@@ -338,16 +322,16 @@ void viderBuffer()
 *
 */
 int main() {
+	
 	/*On créer notre mode pour le programme et on le choisit entre SUIVI et JEU*/
 	int mode;
 	mode = JEU;
-
-
 
 	//On crée la fenêtre du projet
 	sf::RenderWindow ecran(VideoMode(640, 480, 32), " Projet Milot-Diot ");
 
 	/*------------------------CREATION MAP + IMAGES, EDIFICATION DES LIENS -------------------------*/
+	
 	t_map *AppartAntoine=(t_map*)malloc(sizeof(t_map));
 	AppartAntoine->head=NULL;
 	AppartAntoine->nombre_images=14; //A CHANGER 
@@ -402,7 +386,7 @@ int main() {
 		AppartAntoine->head=&tI_messageD;
 	}
 
-	/*Texture 1 ; Texture si on veut sortir sans avoir fait les formes*/
+	/*Texture 1 ; Image correspondant à l'écran pour rentrer la solution*/
 	Texture I_messageE;
 	Sprite S_messageE;
 	if (!(I_messageE.loadFromFile("messageE.bmp"))) // Si le chargement du fichier a échoué
@@ -423,7 +407,7 @@ int main() {
 		compt_glob++;
 	}
 
-	/*Texture 2 ; Texture si on veut sortir sans avoir fait les formes*/
+	/*Texture 2 ; Texture pour le message sur l'indice*/
 	Texture I_messageInd;
 	Sprite S_messageInd;
 	if (!(I_messageInd.loadFromFile("messageInd_dir.jpg"))) // Si le chargement du fichier a échoué
@@ -684,14 +668,12 @@ int main() {
 		printf("%d images n'ont pas été chargées\n", AppartAntoine->nombre_images-compt_glob);
 		return 0;
 	}
-	/*-------------------------------------------------------------------------------------------------------------------------------*/
-
-
+	
 	printf("test2 : après texture\n");
 
 
 
-	/*----------Initialisation capture vidéo et fenêtre pour le tracking----------------*/
+/*----------Initialisation capture vidéo et fenêtre pour le tracking----------------*/
     // Video Capture
     CvCapture *capture;
     // Key for keyboard event
@@ -711,13 +693,9 @@ int main() {
     cvNamedWindow("Luxo Color Tracking", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("Luxo Mask", CV_WINDOW_AUTOSIZE);
     cvMoveWindow("Luxo Color Tracking", 0, 100);
-    cvMoveWindow("Luxo Mask", 650, 100);
-    /*----------------------------------------------------------------------------------*/
-
-
-    
-
-    /*-------------Déclarations nécéssaires au mode SUIVI------------*/
+    cvMoveWindow("Luxo Mask", 650, 100);    
+	
+/*-------------Déclarations nécéssaires au mode SUIVI------------*/
     //coordonnées centreImg
 	t_Coord *centreImg = (t_Coord*) malloc(sizeof(t_Coord));
 	// déplacement camera
@@ -728,10 +706,8 @@ int main() {
 	int diff;
 	float increment;
 	float facteur=0.001;
-	/*-----------------------------------------------------------*/
 
-
-	/*-------------Déclarations nécéssaires au mode JEU------------*/
+/*-------------Déclarations nécéssaires au mode JEU------------*/
 	int nbPos=20;
 	t_Coord* buffer=creer_buffer(nbPos); 
 	int index=0;
@@ -768,31 +744,21 @@ int main() {
 	t_image *scene_courante=AppartAntoine->head;
 	char *motRentre[5];
 	int exitAutorisee=-1; //Par défaut on ne peut pas sortir, si on passe à 0 c'est qu'on a débloqué la sortie
-	/*----------------------------------------------------------*/
-	
 
+	
  	
 
     // Mouse event to select the tracked color on the original image
     cvSetMouseCallback("Luxo Color Tracking", getObjectColor);
 
-
-
-
-
-
-
-
-
-
     printf("test3 : avant switch\n");
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    /* Switch qui gère nos deux modes */
+    /**************SWITCH DU MODE******************/
 	switch(mode)
 	{
-		case SUIVI :
+		case SUIVI : //Figure imposée
 
 			/*Ouverture du fichier pour écrire sur la carte et commander nos servos*/
 		 	FILE *control_servo;
@@ -878,15 +844,11 @@ int main() {
 		        key = cvWaitKey(10);
 		 
 		    }
+		    break;
 		
-		
+		case JEU : //Figure libre
 
-		break;
-		
-
-		case JEU :
-
-			// While we don't want to quit
+		   // While we don't want to quit
 		    while(key != 'Q' && key != 'q' && ecran.isOpen()) 
 		    {
 		 		printf("test4 : boucle\n");
@@ -1039,35 +1001,19 @@ int main() {
 		        ecran.draw(scene_courante->S_image);
 		        // Affichage de la fenêtre à l'écran
 		        ecran.display();
-
-
-
-
-
-
-		 		/*On affiche l'image*/
-		 		cvShowImage("Luxo Color Tracking", image);
+			    
+		 	/*On affiche l'image*/
+		 	cvShowImage("Luxo Color Tracking", image);
 		 		
-
-			    key = cvWaitKey(10);
+ 	         	key = cvWaitKey(10);
 		    }
+		    break;
 
-
-
-
-		break;
+		default : //Sinon on demande au joueur de choisir le mode 
+		    printf("selectionner mode\n");
+		    break;
 		
-
-		default :
-		
-			printf("selectionner mode\n");
-		
-		break;
-		
-	}
-	
-
-  
+	} //Fin du switch, on a quitté le jeu/suivi 
   	
  
     // Destroy the windows we have created
@@ -1077,7 +1023,10 @@ int main() {
     // Destroy the capture
     cvReleaseCapture(&capture);
 
-    
+    free(AppartAntoine);
+    free(zone);
+    free(centreImg);
+	    
  
     return 0;
  
