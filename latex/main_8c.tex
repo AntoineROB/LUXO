@@ -1,0 +1,126 @@
+\hypertarget{main_8c}{}\section{main.\+c File Reference}
+\label{main_8c}\index{main.\+c@{main.\+c}}
+
+
+Fichier principal du Projet C Pan-\/tilt.  
+
+
+{\ttfamily \#include \char`\"{}recognition.\+h\char`\"{}}\\*
+{\ttfamily \#include $<$cstdlib$>$}\\*
+{\ttfamily \#include $<$S\+F\+M\+L/\+Graphics.\+hpp$>$}\\*
+{\ttfamily \#include $<$S\+F\+M\+L/\+Window.\+hpp$>$}\\*
+{\ttfamily \#include $<$S\+F\+M\+L/\+Audio.\+hpp$>$}\\*
+{\ttfamily \#include $<$string.\+h$>$}\\*
+Include dependency graph for main.\+c\+:
+% FIG 0
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structT__image}{T\+\_\+image}
+\item 
+struct \hyperlink{structT__map}{T\+\_\+map}
+\item 
+struct \hyperlink{structT__mot}{T\+\_\+mot}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries max}(a,  b)~((a) $>$ (b) ? (a) \+: (b))\hypertarget{main_8c_affe776513b24d84b39af8ab0930fef7f}{}\label{main_8c_affe776513b24d84b39af8ab0930fef7f}
+
+\item 
+\#define {\bfseries min}(a,  b)~((a) $<$ (b) ? (a) \+: (b))\hypertarget{main_8c_ac6afabdc09a49a433ee19d8a9486056d}{}\label{main_8c_ac6afabdc09a49a433ee19d8a9486056d}
+
+\item 
+\#define {\bfseries abs}(x)~((x) $>$ 0 ? (x) \+: -\/(x))\hypertarget{main_8c_a3aa069ac3980707dae1e0530f50d59e4}{}\label{main_8c_a3aa069ac3980707dae1e0530f50d59e4}
+
+\item 
+\#define {\bfseries sign}(x)~((x) $>$ 0 ? 1 \+: -\/1)\hypertarget{main_8c_ac740756f75e53153605d2702b30d2a9d}{}\label{main_8c_ac740756f75e53153605d2702b30d2a9d}
+
+\item 
+\#define {\bfseries S\+T\+E\+P\+\_\+\+M\+IN}~5\hypertarget{main_8c_a560eb1ca0807e463d7f7dddadf4ab339}{}\label{main_8c_a560eb1ca0807e463d7f7dddadf4ab339}
+
+\item 
+\#define {\bfseries S\+T\+E\+P\+\_\+\+M\+AX}~100\hypertarget{main_8c_afb1629f78e781dc38b5ded85f69928eb}{}\label{main_8c_afb1629f78e781dc38b5ded85f69928eb}
+
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \hyperlink{structT__image}{T\+\_\+image} {\bfseries t\+\_\+image}\hypertarget{main_8c_a1558fcddc67356fe262bc439bed97bbb}{}\label{main_8c_a1558fcddc67356fe262bc439bed97bbb}
+
+\item 
+typedef struct \hyperlink{structT__map}{T\+\_\+map} {\bfseries t\+\_\+map}\hypertarget{main_8c_af0bf94490262d603baaaa4596ccb4f06}{}\label{main_8c_af0bf94490262d603baaaa4596ccb4f06}
+
+\item 
+typedef struct \hyperlink{structT__mot}{T\+\_\+mot} {\bfseries t\+\_\+mot}\hypertarget{main_8c_a35304e04f08dc417d4c5c56de2291833}{}\label{main_8c_a35304e04f08dc417d4c5c56de2291833}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Cv\+Point {\bfseries binarisation} (Ipl\+Image $\ast$image, int $\ast$nb\+Pixels)\hypertarget{main_8c_a429c582312b10fabc36add54985e5c71}{}\label{main_8c_a429c582312b10fabc36add54985e5c71}
+
+\item 
+void {\bfseries add\+Object\+To\+Video} (Ipl\+Image $\ast$image, Cv\+Point object\+Next\+Pos, int nb\+Pixels)\hypertarget{main_8c_a6dd875ade073a35dcc206794f881a1d8}{}\label{main_8c_a6dd875ade073a35dcc206794f881a1d8}
+
+\item 
+void {\bfseries get\+Object\+Color} (int event, int x, int y, int flags, void $\ast$param)\hypertarget{main_8c_addbdbd97b95d177be72cd651b952aec4}{}\label{main_8c_addbdbd97b95d177be72cd651b952aec4}
+
+\item 
+void {\bfseries get\+Coord\+Centre} (Ipl\+Image $\ast$image, \hyperlink{structt__Coord}{t\+\_\+\+Coord} $\ast$centre\+Img)\hypertarget{main_8c_a1bc48f911b4a036cd9e40778de781bc5}{}\label{main_8c_a1bc48f911b4a036cd9e40778de781bc5}
+
+\item 
+int {\bfseries mot\+Valide} (\hyperlink{structt__mot}{t\+\_\+mot} $\ast$motM, char $\ast$tentative\mbox{[}$\,$\mbox{]})\hypertarget{main_8c_a464bd466b14d5fcb80711c8d937cf77f}{}\label{main_8c_a464bd466b14d5fcb80711c8d937cf77f}
+
+\item 
+void \hyperlink{main_8c_a21fdc7eaf4ec751a07c88879bf7cb4fe}{vider\+Buffer} ()\hypertarget{main_8c_a21fdc7eaf4ec751a07c88879bf7cb4fe}{}\label{main_8c_a21fdc7eaf4ec751a07c88879bf7cb4fe}
+
+\begin{DoxyCompactList}\small\item\em Fonction qui permet de vider le buffer. \end{DoxyCompactList}\item 
+void {\bfseries verif\+\_\+zone} (\hyperlink{structt__Coord}{t\+\_\+\+Coord} $\ast$buffer, Ipl\+Image $\ast$image, int i, int nb\+Pos, \hyperlink{structt__lim}{t\+\_\+lim} limites, t\+\_\+zone $\ast$zone, \hyperlink{structt__image}{t\+\_\+image} $\ast$scene\+\_\+courante)\hypertarget{main_8c_a82a4e45ca85beb4124d105fdf26fd73d}{}\label{main_8c_a82a4e45ca85beb4124d105fdf26fd73d}
+
+\item 
+int \hyperlink{main_8c_a51af30a60f9f02777c6396b8247e356f}{main} ()\hypertarget{main_8c_a51af30a60f9f02777c6396b8247e356f}{}\label{main_8c_a51af30a60f9f02777c6396b8247e356f}
+
+\begin{DoxyCompactList}\small\item\em Fonction générale qui lance notre programme. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+Ipl\+Image $\ast$ {\bfseries image}\hypertarget{main_8c_a50c401d9f2e3a164c7d3dceb70b18771}{}\label{main_8c_a50c401d9f2e3a164c7d3dceb70b18771}
+
+\item 
+Cv\+Point {\bfseries object\+Pos} = cv\+Point(-\/1, -\/1)\hypertarget{main_8c_a65ab858190e390150a9b047f5aa541cf}{}\label{main_8c_a65ab858190e390150a9b047f5aa541cf}
+
+\item 
+int {\bfseries h} = 0\hypertarget{main_8c_a16611451551e3d15916bae723c3f59f7}{}\label{main_8c_a16611451551e3d15916bae723c3f59f7}
+
+\item 
+int {\bfseries s} = 0\hypertarget{main_8c_a339d22b3e442946380f98ed19e320db2}{}\label{main_8c_a339d22b3e442946380f98ed19e320db2}
+
+\item 
+int {\bfseries v} = 0\hypertarget{main_8c_ac8859e8c1ce357c4c8b37bbb1936ba1c}{}\label{main_8c_ac8859e8c1ce357c4c8b37bbb1936ba1c}
+
+\item 
+int {\bfseries tolerance} = 10\hypertarget{main_8c_a7ad93b0f37b070ae763a5d95bca08ce4}{}\label{main_8c_a7ad93b0f37b070ae763a5d95bca08ce4}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Fichier principal du Projet C Pan-\/tilt. 
+
+main
+
+\begin{DoxyAuthor}{Author}
+Antoine Milot -\/ Tiphaine Diot 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+Avril/\+Mai 2017
+\end{DoxyDate}
+Ce fichier comprant des structures et des fonctions utiles au projet, pour la figure libre et la figure imposée.
+
+\begin{DoxyAuthor}{Author}
+Antoine Milot -\/ Tiphaine Diot 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+Avril/\+Mai 2017 
+\end{DoxyDate}

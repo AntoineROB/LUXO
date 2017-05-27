@@ -1,0 +1,24 @@
+\hypertarget{imaging_8c}{}\section{imaging.\+c File Reference}
+\label{imaging_8c}\index{imaging.\+c@{imaging.\+c}}
+
+
+Fonctions liées au centrage de la balle.  
+
+
+{\ttfamily \#include \char`\"{}imaging.\+h\char`\"{}}\\*
+Include dependency graph for imaging.\+c\+:
+% FIG 0
+
+
+\subsection{Detailed Description}
+Fonctions liées au centrage de la balle. 
+
+Fonctions liées au traitement d\textquotesingle{}image.
+
+\begin{DoxyAuthor}{Author}
+Antoine Milot -\/ Tiphaine Diot 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+Avril/\+Mai 2017
+\end{DoxyDate}
+Ce fichier regroupe toutes les fonctions liées au traitement d\textquotesingle{}image 
