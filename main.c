@@ -785,11 +785,11 @@ int main() {
 		 		
 		        // We get the current image
 		        image = cvQueryFrame(capture);
-		        getCoordCentre(image, centreImg);
-		        
-		        // If there is no image, we exit the loop
+			// If there is no image, we exit the loop
 		        if(!image)
 		            continue;
+			    
+		        getCoordCentre(image, centreImg);
 		 
 		        objectNextPos = binarisation(image, &nbPixels);
 		        addObjectToVideo(image, objectNextPos, nbPixels);
@@ -851,19 +851,19 @@ int main() {
 		   // While we don't want to quit
 		    while(key != 'Q' && key != 'q' && ecran.isOpen()) 
 		    {
-		 		printf("test4 : boucle\n");
+		 	printf("test4 : boucle\n");
 
 		        // We get the current image
 		        image = cvQueryFrame(capture);
-
 		        printf("test10 : après image =\n");
-
-		        getCoordCentre(image, centreImg);
-		        // If there is no image, we exit the loop
+			// If there is no image, we exit the loop
 		        if(!image)
 		            continue;
+			    
+		        getCoordCentre(image, centreImg);
+		        
 		 		
-		 		/*On binarise l'image*/
+		 	/*On binarise l'image*/
 		        objectNextPos = binarisation(image, &nbPixels);
 		        addObjectToVideo(image, objectNextPos, nbPixels);
 		        
