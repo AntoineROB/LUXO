@@ -135,5 +135,5 @@ typedef enum _t_zone
 t_Coord* creer_buffer(int taille);
 void modif_buffer(int i, t_Coord *buffer, CvPoint objectPos);
 void tracer_mouv(t_Coord *buffer, IplImage *image, int index, int nbPos);
-void verif_zone(t_Coord *buffer, IplImage *image, int i, int nbPos, t_lim limites, t_zone *zone);
+//void verif_zone(t_Coord *buffer, IplImage *image, int i, int nbPos, t_lim limites, t_zone *zone, t_image scene_courante);
 void afficher_zone(IplImage*image, t_zone *zone, t_lim limites);

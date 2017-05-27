@@ -315,6 +315,178 @@ void viderBuffer()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+*   \fn verif_zone
+*	\brief Fonction qui trouve dans quelle zone on se trouve
+* 
+*	Elle modifie l'énum zone en fonction de où l'on se trouve
+*	Les 20 positions du buffer doivent être comprises dans cette zone
+*
+*/
+void verif_zone(t_Coord *buffer, IplImage *image, int i, int nbPos, t_lim limites, t_zone *zone, t_image *scene_courante)
+{
+	int j=0;
+	bool t=true;
+	
+	*zone=aucune;
+
+	//zone gauche
+	if((buffer[i].x>=limites.l1)&&(buffer[i].x<=limites.l2)&&(buffer[i].y>=limites.l3)&&(buffer[i].y<=limites.l4))
+	{
+		while((j<nbPos)&&(t==true))
+		{
+			if((buffer[j].x>=limites.l1)&&(buffer[j].x<=limites.l2)&&(buffer[j].y>=limites.l3)&&(buffer[j].y<=limites.l4))
+			{
+				j++;
+			}
+			else
+			{
+				t=false;
+			}
+		}
+		if(t)
+		{
+			*zone=gauche;
+		}
+	}
+
+	//zone haut
+	if((buffer[i].x>=limites.l5)&&(buffer[i].x<=limites.l6)&&(buffer[i].y>=limites.l1)&&(buffer[i].y<=limites.l2))
+	{
+		while((j<nbPos)&&(t==true))
+		{
+			if((buffer[j].x>=limites.l5)&&(buffer[j].x<=limites.l6)&&(buffer[j].y>=limites.l1)&&(buffer[j].y<=limites.l2))
+			{
+				j++;
+			}
+			else
+			{
+				t=false;
+			}
+		}
+		if(t)
+		{
+			*zone=haut;
+		}
+	}
+
+	//zone droite
+	if((buffer[i].x>=limites.l9)&&(buffer[i].x<=limites.l10)&&(buffer[i].y>=limites.l3)&&(buffer[i].y<=limites.l4))
+	{
+		while((j<nbPos)&&(t==true))
+		{
+			if((buffer[j].x>=limites.l9)&&(buffer[j].x<=limites.l10)&&(buffer[j].y>=limites.l3)&&(buffer[j].y<=limites.l4))
+			{
+				j++;
+			}
+			else
+			{
+				t=false;
+			}
+		}
+		if(t)
+		{
+			*zone=droite;
+		}
+	}
+
+	//zone bas
+	if((buffer[i].x>=limites.l5)&&(buffer[i].x<=limites.l6)&&(buffer[i].y>=limites.l7)&&(buffer[i].y<=limites.l8))
+	{
+		while((j<nbPos)&&(t==true))
+		{
+			if((buffer[j].x>=limites.l5)&&(buffer[j].x<=limites.l6)&&(buffer[j].y>=limites.l7)&&(buffer[j].y<=limites.l8))
+			{
+				j++;
+			}
+			else
+			{
+				t=false;
+			}
+		}
+		if(t)
+		{
+			*zone=bas;
+		}
+	}
+
+	
+	/* Tests supplémentaires pour déterminer si on est dans zoom */
+	//Chambre
+	if(scene_courante->numero==6)
+	{
+		if((buffer[i].x>=195)&&(buffer[i].x<=275)&&(buffer[i].y>=225)&&(buffer[i].y<=305))
+		{	
+			while((j<nbPos)&&(t==true))
+			{
+				if((buffer[j].x>=195)&&(buffer[j].x<=275)&&(buffer[j].y>=225)&&(buffer[j].y<=305))
+				{
+					j++;
+				}
+				else
+				{
+					t=false;
+				}
+			}
+			if(t)
+			{
+				*zone=zoom;
+			}
+		}
+	}
+
+	//Cuisine
+	if(scene_courante->numero==8)
+	{
+		if((buffer[i].x>=245)&&(buffer[i].x<=325)&&(buffer[i].y>=81)&&(buffer[i].y<=150))
+		{	
+			while((j<nbPos)&&(t==true))
+			{
+				if((buffer[j].x>=245)&&(buffer[j].x<=325)&&(buffer[j].y>=81)&&(buffer[j].y<=150))
+				{
+					j++;
+				}
+				else
+				{
+					t=false;
+				}
+			}
+			if(t)
+			{
+				*zone=zoom;
+			}
+		}
+	}
+
+	//Télé
+	if(scene_courante->numero==9)
+	{
+		if((buffer[i].x>=295)&&(buffer[i].x<=375)&&(buffer[i].y>=200)&&(buffer[i].y<=280))
+		{	
+			while((j<nbPos)&&(t==true))
+			{
+				if((buffer[j].x>=295)&&(buffer[j].x<=375)&&(buffer[j].y>=200)&&(buffer[j].y<=280))
+				{
+					j++;
+				}
+				else
+				{
+					t=false;
+				}
+			}
+			if(t)
+			{
+				*zone=zoom;
+			}
+		}
+	}
+
+
+	//Tv x=335 y=240
+	//chambre x=235 y=265
+	//cuisine x=285 y=110
+}
+
 
 /**
 *   \fn main
@@ -683,7 +855,7 @@ int main() {
     // Next position of the object we overlay
     CvPoint objectNextPos;
     // On initialise le flux vidéo par rapport à la camera 0 ou 1
-    capture = cvCreateCameraCapture(1);
+    capture = cvCreateCameraCapture(0);
     // Check if the capture is ok
         if (!capture) {
         printf("Can't initialize the video capture.\n");
@@ -849,21 +1021,24 @@ int main() {
 		case JEU : //Figure libre
 
 		   // While we don't want to quit
-		    while(key != 'Q' && key != 'q' && ecran.isOpen()) 
+		    while(key != 'Q' && key != 'q') 
 		    {
-		 	printf("test4 : boucle\n");
+		 		printf("test4 : boucle\n");
 
 		        // We get the current image
 		        image = cvQueryFrame(capture);
 		        printf("test10 : après image =\n");
-			// If there is no image, we exit the loop
+				// If there is no image, we exit the loop
 		        if(!image)
-		            continue;
+		        {
+		        	printf("image non récupérée\n");
+		        	return 0;
+		        }
 			    
 		        getCoordCentre(image, centreImg);
 		        
 		 		
-		 	/*On binarise l'image*/
+		 		/*On binarise l'image*/
 		        objectNextPos = binarisation(image, &nbPixels);
 		        addObjectToVideo(image, objectNextPos, nbPixels);
 		        
@@ -890,7 +1065,7 @@ int main() {
 		 		printf("test8 : avant aff zone\n");
 
 		 		/* On cherche la zone où on se trouve et on les affiches sur l'image capturée */
-		 		verif_zone(buffer,image, index%nbPos, nbPos,limites,zone);
+		 		verif_zone(buffer,image, index%nbPos, nbPos,limites,zone,scene_courante);
 		 		afficher_zone(image,zone,limites);
 
 
@@ -1002,8 +1177,8 @@ int main() {
 		        // Affichage de la fenêtre à l'écran
 		        ecran.display();
 			    
-		 	/*On affiche l'image*/
-		 	cvShowImage("Luxo Color Tracking", image);
+		 		/*On affiche l'image*/
+		 		cvShowImage("Luxo Color Tracking", image);
 		 		
  	         	key = cvWaitKey(10);
 		    }
