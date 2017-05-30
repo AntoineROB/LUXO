@@ -30,7 +30,7 @@ IplImage *image;
 // Position de notre objet
 CvPoint objectPos = cvPoint(-1, -1);
 // La couleur que l'on cherche et notre tolérance
-int h = 0, s = 0, v = 0, tolerance = 10;
+int h = 0, s = 0, v = 0, tolerance = 30;
 
 
 
@@ -204,6 +204,8 @@ void getCoordCentre(IplImage *image, t_Coord *centreImg)
 *
 */
 int main() {
+
+	int compteur=0; //Pour nous laisser le temps de sélectionner la balle
 	
 
 
@@ -234,9 +236,9 @@ int main() {
     //coordonnées centreImg
 	t_Coord *centreImg = (t_Coord*) malloc(sizeof(t_Coord));
 	// déplacement camera
-	int tolerance;
+	int tolerancem;
 	float step;
-	tolerance=15;
+	tolerancem=15;
 	step=1;
 	int diff;
 	float increment;
@@ -280,51 +282,56 @@ int main() {
 	           continue;
 	      
 	     getCoordCentre(image, centreImg);
+	     
+	     if(compteur<500)
+	     {
+	     
 		 
-		objectNextPos = binarisation(image, &nbPixels);
-		addObjectToVideo(image, objectNextPos, nbPixels);
-		        
-		 //Maintenant on appelle la fonction qui va nous permettre de garder l'objet au centre de l'imageint 
- 		printf("xcentre=%d\n",centreImg->x);
-		printf("ycentre=%d\n",centreImg->y);
-		printf("xobj=%d\n",objectPos.x);
-		printf("yobj=%d\n",objectPos.y);
-		       
-		//calcul sur x
-		diff=(centreImg->x+tolerance-objectPos.x);
-		if(diff>0)
-		{
-			increment=(step);
-		}
-		else
-		{
-			increment=(-step);
-		}
-		servo_old[0]=servo_old[0]+facteur*abs(diff)*increment;
+			objectNextPos = binarisation(image, &nbPixels);
+			addObjectToVideo(image, objectNextPos, nbPixels);
+				   
+			 //Maintenant on appelle la fonction qui va nous permettre de garder l'objet au centre de l'imageint 
+	 		printf("xcentre=%d\n",centreImg->x);
+			printf("ycentre=%d\n",centreImg->y);
+			printf("xobj=%d\n",objectPos.x);
+			printf("yobj=%d\n",objectPos.y);
+				  
+			//calcul sur x
+			diff=(centreImg->x+tolerancem-objectPos.x);
+			if(diff>0)
+			{
+				increment=(step);
+			}
+			else
+			{
+				increment=(-step);
+			}
+			servo_old[0]=servo_old[0]+facteur*abs(diff)*increment;
 		
-		//calcul sur y
-		diff=(centreImg->y+tolerance-objectPos.y);
-		if(diff>0) 
-		{
-			increment=(-step);
-		}
-		else
-		{
-			increment=(step);
-		}
-		servo_old[1]=servo_old[1]+facteur*abs(diff)*increment;
+			//calcul sur y
+			diff=(centreImg->y+tolerancem-objectPos.y);
+			if(diff>0) 
+			{
+				increment=(-step);
+			}
+			else
+			{
+				increment=(step);
+			}
+			servo_old[1]=servo_old[1]+facteur*abs(diff)*increment;
 				
-		if((servo_old[0]<35)||(servo_old[0]>120) || (objectPos.x<0))
-		{
-			servo_old[0]=60;
-		}
-		if((servo_old[1]<35)||(servo_old[1]>120) || (objectPos.y<0))
-		{
-			servo_old[1]=60;
-		}
+			if((servo_old[0]<35)||(servo_old[0]>120) || (objectPos.x<0))
+			{
+				servo_old[0]=60;
+			}
+			if((servo_old[1]<35)||(servo_old[1]>120) || (objectPos.y<0))
+			{
+				servo_old[1]=60;
+			}
 
-		printf("%d,%d\n", (int) servo_old[0], (int) servo_old[1]);
-		fprintf(control_servo, "%d,%d\n", (int) servo_old[0],(int) servo_old[1]);
+			printf("%d,%d\n", (int) servo_old[0], (int) servo_old[1]);
+			fprintf(control_servo, "%d,%d\n", (int) servo_old[0],(int) servo_old[1]);
+		}
 			  
           key = cvWaitKey(10);
 		 
