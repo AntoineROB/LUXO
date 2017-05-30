@@ -2,7 +2,7 @@
 CC = g++
 CCFLAGS = -Wall -g 
 LIBS = -L $(OPENCV)
-LDFLAGS = -lm -lsfml-graphics -lsfml-window -lsfml-system 
+LDFLAGS = -lm -lsfml-graphics -lsfml-window -lsfml-system -lpthread
 OPENCV = `pkg-config opencv --cflags --libs`
 
 

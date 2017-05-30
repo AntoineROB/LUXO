@@ -38,7 +38,6 @@ void modif_buffer(int i, t_Coord *buffer, CvPoint objectPos)
 {
 	buffer[i].x=objectPos.x;
 	buffer[i].y=objectPos.y;
-	printf("buffer[%d]= %d ; %d\n",i,buffer[i].x,buffer[i].y);
 }
 
 
@@ -85,7 +84,7 @@ void afficher_zone(IplImage*image, t_zone *zone, t_lim limites)
 	CvPoint pt7=cvPoint (limites.l5,limites.l7);
 	CvPoint pt8=cvPoint (limites.l6,limites.l8);
 
-	if(*zone==0)
+	/*if(*zone==0)
 	{
 		printf("ZONE aucune\n");
 	}
@@ -104,7 +103,7 @@ void afficher_zone(IplImage*image, t_zone *zone, t_lim limites)
 	if(*zone==4)
 	{
 		printf("ZONE bas\n");
-	}
+	}*/
 
 	cvRectangle(image, pt1,pt2, CV_RGB(0, 255, 0), 1, 8, 0 );
 	cvRectangle(image, pt3,pt4, CV_RGB(0, 255, 0), 1, 8, 0 );
@@ -122,37 +121,36 @@ void afficher_zone(IplImage*image, t_zone *zone, t_lim limites)
 *	Elle renvoie un entier qui nous permet de gérer les différents cas
 *	Elle prend en paramètre la structure du mot mystère et la tentative du joueurs
 */
-int motValide(t_mot *motM, char *tentative[])
+int motValide(t_mot *motM, char tentative[])
 {
 	int compt=0;
 	int vrai=0; //si vrai==0 on veut juste sortir sans proposition, si vrai==1 tentative réussie on pourra sortir du jeu, si vrai==-1 erreur on retire une vie
-	while(compt<motM->nb_caracteres && vrai!=-1)	//on vérifie d'abord si le mot correspond à MotSortie qui nous permet de sortir sans faire de proposition
+	while(compt<motM->nb_caracteres && vrai==0)	//on vérifie d'abord si le mot correspond à MotSortie qui nous permet de sortir sans faire de proposition
 	{
-		if(*tentative[compt]!=motM->motSortie[compt])
+		if(tentative[compt]!=motM->motSortie[compt])
+		{
+			vrai=1; //Si ce n'est pas le mot mystère on considère que c'est une vraie proposition;
+		}
+		compt++;
+	}
+	
+	compt=0;
+	
+	while(compt<motM->nb_caracteres && vrai==1)
+	{
+		if(tentative[compt]!=motM->motMystere[compt])
 		{
 			vrai=-1;
 		}
 		compt++;
 	}
-	if(vrai!=0)	//Si le mot entré en correspond pas au motSortie on va le considérer comme une vraie proposition
-	{
-		compt=0;
-		vrai=0;
-		while(compt<motM->nb_caracteres && vrai!=-1)
-		{
-			if(*tentative[compt]!=motM->motMystere[compt])
-			{
-				vrai=-1;
-			}
-			compt++;
-		}
 
-		//On regarde maintenant si on a bien trouver le mot mystère
-		if(vrai==-1)
-		{
-			motM->nb_chances--;
-		}
+	//On regarde maintenant si on a bien trouver le mot mystère
+	if(vrai==-1)
+	{
+		motM->nb_chances--;
 	}
+	
 	return vrai;
 	
 }

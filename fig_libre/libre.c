@@ -34,12 +34,9 @@ using namespace sf; //Espace de nommage nous permet de ne pas utiliser sf:: à c
 #define STEP_MIN 5
 #define STEP_MAX 100 
 
-IplImage *image;
- 
-// Position de notre objet
-CvPoint objectPos = cvPoint(-1, -1);
-// La couleur que l'on cherche et notre tolérance
-int h = 0, s = 0, v = 0, tolerance = 10;
+
+
+
 
 
 /***********INTERFACE*********************/
@@ -81,7 +78,33 @@ typedef struct T_map
 	t_image *head;
 } t_map;
 
+/*********************NECESSAIRE POUR PTHREAD**************/
 
+IplImage *image;
+int RUN=1;
+CvCapture* capture; 
+ 
+// Position de notre objet
+CvPoint objectPos = cvPoint(-1, -1);
+// La couleur que l'on cherche et notre tolérance
+int h = 0, s = 0, v = 0, tolerance = 30;
+
+pthread_t thread_opencv;
+	
+//coordonnées centreImg
+t_Coord *centreImg = (t_Coord*) malloc(sizeof(t_Coord));
+// Number of tracked pixels
+int nbPixels;
+// Next position of the object we overlay
+CvPoint objectNextPos;
+int nbPos=20;
+t_Coord* buffer=creer_buffer(nbPos); 
+int indx=0;
+int cpt=0;
+t_zone *zone=(t_zone*)malloc(sizeof(t_zone));
+t_lim limites;
+int FLAG=-1;
+t_image *scene_courante;
 
 /********FONCTION TRAITEMENT D'IMAGES CAMERA***********/
 
@@ -423,15 +446,75 @@ void verif_zone(t_Coord *buffer, IplImage *image, int i, int nbPos, t_lim limite
 
 /*************************************Fonctions pour PTHEARD**********************************/
 
-void* opencv_routine(void *dats){
-  cvNamedWindow("Video",0); // create window
-  capture = cvCaptureFromCAM(CV_CAP_ANY); // -1 = only one cam or doesn't matter
-  frame = NULL;
+void* opencv_routine(void *dats)
+{
+
+  // On initialise le flux vidéo par rapport à la camera 0 ou 1
+  capture = cvCreateCameraCapture(1);
+  // Check if the capture is ok
+  if (!capture) {
+    printf("Can't initialize the video capture.\n");
+    RUN=0;
+  }
+  
+
+  // Create the windows
+  cvNamedWindow("Luxo Color Tracking", CV_WINDOW_AUTOSIZE);
+  cvNamedWindow("Luxo Mask", CV_WINDOW_AUTOSIZE);
+  cvMoveWindow("Luxo Color Tracking", 0, 100);
+  cvMoveWindow("Luxo Mask", 650, 100); 
+
+  // Mouse event to select the tracked color on the original image
+  cvSetMouseCallback("Luxo Color Tracking", getObjectColor);
+
   while(RUN)
     {
-      frame = cvQueryFrame(capture);
-      cvShowImage("Video", frame);
-      cvWaitKey(10);
+        if(FLAG==-1)
+       	{
+       		printf("Les variables ne sont pas encore prêtes !\n");
+       	}
+	    
+	    else
+	    {  
+
+	    	// We get the current image
+	        image = cvQueryFrame(capture);
+			// If there is no image, we exit the loop
+			if(!image)
+			{
+			  	printf("image non récupérée\n");
+			   	return 0;
+			}
+
+			getCoordCentre(image, centreImg);
+			        
+			 		
+			/*On binarise l'image*/
+			objectNextPos = binarisation(image, &nbPixels);
+			addObjectToVideo(image, objectNextPos, nbPixels);
+			        
+			//On récupère les coordonnées de l'objet et du centre de l'image
+
+
+		    //remplissage buffer de positions (taille nbPos)
+		    modif_buffer(indx%nbPos, buffer, objectPos);
+		    indx++;
+	        /* On trace le chemin du mouvement */
+		    if(cpt>nbPos-1)
+		    {
+		     	tracer_mouv(buffer, image, indx, nbPos);
+		    }
+			cpt++;
+
+			/* On cherche la zone où on se trouve et on les affiches sur l'image capturée */
+			verif_zone(buffer,image, indx%nbPos, nbPos,limites,zone,scene_courante);
+			afficher_zone(image,zone,limites);
+
+		    /*On affiche l'image*/
+		 	cvShowImage("Luxo Color Tracking", image);
+		}
+
+        cvWaitKey(10);
       
     }
   
@@ -624,6 +707,7 @@ int main()
 		tI_chambre.right=&tI_chambre;
 		tI_chambre.up=&tI_messageInd;
 		tI_chambre.down=&tI_h1;
+		tI_chambre.indice=&tI_IndChambre;
 		compt_glob++;
 	}
 
@@ -785,41 +869,8 @@ int main()
 	}
 	
 
-
-
-	/*----------Initialisation capture vidéo et fenêtre pour le tracking----------------*/
-    // Video Capture
-    CvCapture *capture;
-    // Key for keyboard event
-    char key;
-    // Number of tracked pixels
-    int nbPixels;
-    // Next position of the object we overlay
-    CvPoint objectNextPos;
-    // On initialise le flux vidéo par rapport à la camera 0 ou 1
-    capture = cvCreateCameraCapture(0);
-    // Check if the capture is ok
-        if (!capture) {
-        printf("Can't initialize the video capture.\n");
-            return -1;
-    }
-    // Create the windows
-    cvNamedWindow("Luxo Color Tracking", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("Luxo Mask", CV_WINDOW_AUTOSIZE);
-    cvMoveWindow("Luxo Color Tracking", 0, 100);
-    cvMoveWindow("Luxo Mask", 650, 100);    
-	
-/*-------------Déclarations nécéssaires au mode SUIVI------------*/
-    //coordonnées centreImg
-	t_Coord *centreImg = (t_Coord*) malloc(sizeof(t_Coord));
-	
-	/*-------------Déclarations nécéssaires au mode JEU------------*/
-	int nbPos=20;
-	t_Coord* buffer=creer_buffer(nbPos); 
-	int index=0;
-	int cpt=0;
-	t_zone *zone=(t_zone*)malloc(sizeof(t_zone));
-	t_lim limites;
+/*----------Initialisation capture vidéo et fenêtre pour le tracking----------------*/
+    
 	limites.l1=0;
 	limites.l2=80;
 	limites.l3=200;
@@ -832,7 +883,7 @@ int main()
 	limites.l10=640;
 
 	//  Mot mystère
-	t_mot *tM_mystere;
+	t_mot *tM_mystere=(t_mot*)malloc(sizeof(t_mot));
 	tM_mystere->nb_caracteres=5;
 	tM_mystere->nb_chances=3;
 	tM_mystere->motMystere[0]='p';
@@ -847,178 +898,154 @@ int main()
 	tM_mystere->motSortie[4]='r';
 
 	//On commence par initialiser toutes les variables utiles
-	t_image *scene_courante=AppartAntoine->head;
-	char *motRentre[5];
+	scene_courante=AppartAntoine->head;
+	char motRentre[5];
 	int exitAutorisee=-1; //Par défaut on ne peut pas sortir, si on passe à 0 c'est qu'on a débloqué la sortie
 
-    // Mouse event to select the tracked color on the original image
-    cvSetMouseCallback("Luxo Color Tracking", getObjectColor);
-    
-/*********************************Boucle while*************************/    
+    //Toutes les variables nécessaires pour le ptheard sont OK
+    FLAG=1;
+    pthread_create(&thread_opencv,NULL,opencv_routine,NULL);
+
+/*********************************Boucle while*************************/   
+
+	
+	//Chargement d'une musique
+/*	sf::Music music;
+	if (!music.openFromFile("Sound1.wav"))
+    {
+    	printf("Erreur dans le chargement de la musique\n");
+    	//Comme la musique n'est pas un point indispensable du programme on lance quand même le jeu sans musique
+	} */
     
      // While we don't want to quit
-     pthread_create(&thread_opencv,NULL,opencv_routine,NULL);
+
 	while(ecran.isOpen()) 
 	{
- 		printf("test4 : boucle\n");
+ 		
+		/*interface graph*/
+		Event event; //Variable qui nous permet de gérer les événements clavier
 
-        // We get the current image
-        image = cvQueryFrame(capture);
-        printf("test10 : après image =\n");
-	// If there is no image, we exit the loop
-		        if(!image)
-		        {
-		        	printf("image non récupérée\n");
-		        	return 0;
-		        }
-			    
-		        getCoordCentre(image, centreImg);
-		        
-		 		
-		 		/*On binarise l'image*/
-		        objectNextPos = binarisation(image, &nbPixels);
-		        addObjectToVideo(image, objectNextPos, nbPixels);
-		        
-		        //On récupère les coordonnées de l'objet et du centre de l'image
-				printf("xcentre=%d\n",centreImg->x);
-				printf("ycentre=%d\n",centreImg->y);
-				printf("xobj=%d\n",objectPos.x);
-				printf("yobj=%d\n",objectPos.y);
-			    
-			    printf("test9 : avant modif buffer\n");
+		//music.play();
+		
 
+		//Boucle qui gère les événements, reste dans la boucle tant qu'elle n'a pas gérer tous les événements
+        while (ecran.pollEvent(event))
+        {            
+	       	/*Event qui permet de fermer la fenêtre*/
+	        if (event.type == Event::Closed)
+	        {
+	        	ecran.close();
+	        	RUN=0;
+	        }
+		    
+		    /*Event qui permet de naviguer entre les images à partir du clavier, le but est de ne pas s'en servir*/
+		    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+		   		scene_courante=scene_courante->left;
+			}
+			else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				scene_courante=scene_courante->right;
+			}
+			else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				scene_courante=scene_courante->up;
+			}
+			else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				scene_courante=scene_courante->down;
+			}
+	    } //Fin boucle while event
 
-			    //remplissage buffer de positions (taille nbPos)
-			    modif_buffer(index%nbPos, buffer, objectPos);
-			    index++;
+	    
+    	//On regarde si on se trouve dans l'image ou on peut rentrer le mot à trouver         
+        if(scene_courante->numero==1)
+        {
+        	//Dans ce cas si, on va demander au joueur de rentrer un mot et regarder s'il est valide
+        	ecran.clear();
+        	ecran.draw(S_messageE);
+        	ecran.display();
+		    printf("Vous pensez pouvoir sortir ??\n");
+		    printf("Vous avez %d chances\n", tM_mystere->nb_chances);
+		    printf("Alors quel est le mot mystère ?\n");
+		    scanf("%c",&motRentre[0]);
+		    scanf("%c",&motRentre[1]);
+		    scanf("%c",&motRentre[2]);
+		    scanf("%c",&motRentre[3]);
+		    scanf("%c",&motRentre[4]);
 
-			    /* On trace le chemin du mouvement */
-			    if(cpt>nbPos-1)
-			    {
-			    	tracer_mouv(buffer, image, index, nbPos);
-		 		}
-		 		cpt++;
+		   	//fgets(*motRentre, 5, stdin); //permet de rentrer une chaine de 5 caractères
+	    	printf("Avant vide Buffer\n");
 
-		 		printf("test8 : avant aff zone\n");
+	    	viderBuffer(); //On vide le buffer pour la prochaine execution
 
-		 		/* On cherche la zone où on se trouve et on les affiches sur l'image capturée */
-		 		verif_zone(buffer,image, index%nbPos, nbPos,limites,zone,scene_courante);
-		 		afficher_zone(image,zone,limites);
-
-
-		 		printf("test7 : après aff zone\n");
-
-		 		/*interface graph*/
-		 		Event event; //Variable qui nous permet de gérer les événements clavier
-
-		        //Chargement d'une musique
-		        /*
-		        sf::Music music;
-				if (!music.openFromFile("Sound1.wav"))
-		    	{
-		    		printf("Erreur dans le chargement de la musique\n");
-		    		//Comme la musique n'est pas un point indispensable du programme on lance quand même le jeu sans musique
-				}
-				else 
-				{
-					music.play();
-				}
-				*/
-
-				//Boucle qui gère les événements, reste dans la boucle tant qu'elle n'a pas gérer tous les événements
-				printf("test6 : avant boucle event\n");
-
-		        while (ecran.pollEvent(event))
-		        {            
-		        	/*Event qui permet de fermer la fenêtre*/
-		            if (event.type == Event::Closed)
-		                ecran.close();
-
-		            /*Event qui permet de naviguer entre les images à partir du clavier, le but est de ne pas s'en servir*/
-		            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-					{
-		   				scene_courante=scene_courante->left;
-					}
-					else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-					{
-						scene_courante=scene_courante->right;
-					}
-					else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-					{
-						scene_courante=scene_courante->up;
-					}
-					else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-					{
-						scene_courante=scene_courante->down;
-					}
-		         }
-
-		         printf("test5 : après boucle event\n");
-
-
-		    	//On regarde si on se trouve dans l'image ou on peut rentrer le mot à trouver         
-		        if(scene_courante->numero==1)
-		         {
-		         	 //Dans ce cas si, on va demander au joueur de rentrer un mot et regarder s'il est valide
-		         	printf("Vous pensez pouvoir sortir ??\n");
-		         	printf("Alors quel est le mot mystère ?\n");
-		         	fgets(*motRentre, 5, stdin); //permet de rentrer une chaine de 5 caractères
-		         	viderBuffer(); //On vide le buffer pour la prochaine execution
-
-		         	//On appelle ensuite la fonction qui va nous permetttre de voir si le mot est valide
-		         	exitAutorisee=motValide(tM_mystere,motRentre);
-		         	if(exitAutorisee==1) // On gère le résultat de la validation ou non du mot rentrer
-		         	{
-		         		printf("Vous avez réussi à trouver le mot mystère bien joué !\n");
-		         		ecran.close();
-		         	}
-		         	else if(exitAutorisee==0)
-		         	{
-		         		printf("\n\nVous avez choisi de ne pas faire de proposition !\n");
-		         		printf("Retourner au jeu pour continuer à chercher des indices ! \n");
-		         		scene_courante=scene_courante->down;
-		         	}
-		         	else if(exitAutorisee==-1 && tM_mystere->nb_chances==0)
-		         	{
-		         		printf("Vous avez perdu ! Dommage, c'est la fin pour vous...\n");
-		         		ecran.close();
-		         	}
-		         } 
-		         /* Si non, on va regarder dans quelle zone d'intérêt se trouve notre balle et naviguer entre les différentes images en fonction de ça*/
-		         /*Appeler la fonction qui permet de savoir dans quelle zone on se trouve*/
-		         if(*zone==zoom) //cette zone ne prends en compte que 3 images, la fonction qui nous permet de trouver la zone gère directement les cas
-		         {
-		         	 scene_courante=scene_courante->indice;
-		         } 
-		         else if(*zone==gauche)
-		         {
-		         	 scene_courante=scene_courante->left;
-		         }
-		         else if(*zone==droite)
-		         {
-		         	 scene_courante=scene_courante->right;
-		         }
-		         else if(*zone==haut)
-		         {
-		         	 scene_courante=scene_courante->up;
-		         }
-		         else if(*zone==bas)
-		         {
-		         	 scene_courante=scene_courante->down;
-		         }
-		            
-		        // Clean de la fenêtre d'affichage
-		        ecran.clear();
-		        //draw le sprite
-		        ecran.draw(scene_courante->S_image);
-		        // Affichage de la fenêtre à l'écran
-		        ecran.display();
-			    
-		 		/*On affiche l'image*/
-		 		cvShowImage("Luxo Color Tracking", image);
-		 		
- 	         	key = cvWaitKey(10);
+	       	//On appelle ensuite la fonction qui va nous permetttre de voir si le mot est valide
+	       	printf("Avant exitAutorisee\n");
+	       	exitAutorisee=motValide(tM_mystere,motRentre);
+	      	if(exitAutorisee==1) // On gère le résultat de la validation ou non du mot rentrer
+	       	{
+	       		printf("Vous avez réussi à trouver le mot mystère bien joué !\n");
+	       		RUN=0;
+	       		ecran.close();
 		    }
+		    else if(exitAutorisee==0)
+		    {
+		    	printf("\n\nVous avez choisi de ne pas faire de proposition !\n");
+		    	printf("Retourner au jeu pour continuer à chercher des indices ! \n");
+	     		scene_courante=scene_courante->down;
+	       	}
+	       	else if ((exitAutorisee==-1 && tM_mystere->nb_chances!=0))
+	       	{
+	       		printf("Ce n'est pas le mot mystère !!\n");
+	       		printf("Retourner au jeu pour continuer à chercher des indices ! \n");
+	     		scene_courante=scene_courante->down;
+	       	}
+		    else if(exitAutorisee==-1 && tM_mystere->nb_chances==0)
+		    {
+		    	printf("Vous avez perdu ! Dommage, c'est la fin pour vous...\n");
+		    	RUN=0;
+		    	ecran.close();
+		    }
+	    } 
+	    /* Si non, on va regarder dans quelle zone d'intérêt se trouve notre balle et naviguer entre les différentes images en fonction de ça*/
+	    /*Appeler la fonction qui permet de savoir dans quelle zone on se trouve*/
+	    if(*zone==zoom) //cette zone ne prends en compte que 3 images, la fonction qui nous permet de trouver la zone gère directement les cas
+	    {
+			scene_courante=scene_courante->indice;
+	    } 
+	    else if(*zone==gauche)
+	    {
+			scene_courante=scene_courante->left;
+		}
+		else if(*zone==droite)
+		{
+			scene_courante=scene_courante->right;
+	    }
+	    else if(*zone==haut)
+		{
+		    scene_courante=scene_courante->up;
+	    }
+	    else if(*zone==bas)
+	    {
+	    	scene_courante=scene_courante->down;
+	    }
+	    
+	    *zone=aucune;
+		            
+		// Clean de la fenêtre d'affichage
+		ecran.clear();
+	    //draw le sprite
+	    ecran.draw(scene_courante->S_image);
+	    //draw circle sur objectnextPos
+	    sf::CircleShape shape(20);
+	    shape.setPosition(objectPos.x,objectPos.y);
+	    ecran.draw(shape);
+	    // Affichage de la fenêtre à l'écran
+	    ecran.display();
+		
+
+	}//fin while ecran fermé
+
 	// Destroy the windows we have created
     cvDestroyWindow("Luxo Color Tracking");
     cvDestroyWindow("Luxo Mask");
@@ -1027,7 +1054,7 @@ int main()
     cvReleaseCapture(&capture);    
 		    
 		    
-free(AppartAntoine);
+	free(AppartAntoine);
     free(zone);
     free(centreImg);
     
