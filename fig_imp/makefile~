@@ -1,0 +1,34 @@
+# options de compilation
+CC = g++
+CCFLAGS = -Wall -g 
+LIBS = -L $(OPENCV)
+LDFLAGS = -lm -lsfml-graphics -lsfml-window -lsfml-system 
+OPENCV = `pkg-config opencv --cflags --libs`
+
+
+# fichiers du projet
+SRC = main.c outils.c
+OBJ = $(SRC:.c=.o)
+EXEC = impo
+
+
+# règle initiale
+all: $(EXEC)
+
+# dépendance des .h
+main.o: outils.h
+outils.o: outils.h
+
+# règles de compilation
+%.o: %.c
+	$(CC) $(CCFLAGS) -o $@ -c $<
+
+# règles d'édition de liens
+$(EXEC): $(OBJ)
+	$(CC) -o $@ $^ $(LIBS) $(LDFLAGS)
+
+# règles supplémentaires
+clean:
+	rm -f *.o 
+rmproper:
+	rm -f $(EXEC) *.o

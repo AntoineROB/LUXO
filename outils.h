@@ -12,8 +12,8 @@
 #include <stdlib.h>
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/core/types.hpp"
+//#include "opencv2/core.hpp"
+//#include "opencv2/core/types.hpp"
 #include <time.h>
 #include <unistd.h>
 

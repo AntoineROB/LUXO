@@ -7,7 +7,7 @@
 *   Ce fichier comprant des structures et des fonctions utiles au projet, pour la figure libre et la figure imposée. 
 */
 
-#include "recognition.h"
+#include "outils.h"
 
 // Nécessaire à l'interface graphique
 #include <cstdlib>

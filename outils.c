@@ -57,7 +57,7 @@ void tracer_mouv(t_Coord *buffer, IplImage *image, int index, int nbPos)
 	int j;
 	for (j=0;j<nbPos-1;j++)
 	{
-		p=CvPoint(buffer[i%nbPos].x, buffer[i%nbPos].y);
+		p=cvPoint(buffer[i%nbPos].x, buffer[i%nbPos].y);
 		cvDrawCircle(image, p, 8, CV_RGB(255, 0, 0), -1);
 		i++;
 
@@ -76,14 +76,14 @@ void tracer_mouv(t_Coord *buffer, IplImage *image, int index, int nbPos)
 */
 void afficher_zone(IplImage*image, t_zone *zone, t_lim limites)
 {
-	CvPoint pt1=CvPoint (limites.l1,limites.l3);
-	CvPoint pt2=CvPoint (limites.l2,limites.l4);
-	CvPoint pt3=CvPoint (limites.l5,limites.l2);
-	CvPoint pt4=CvPoint (limites.l6,limites.l1);
-	CvPoint pt5=CvPoint (limites.l9,limites.l3);
-	CvPoint pt6=CvPoint (limites.l10,limites.l4);
-	CvPoint pt7=CvPoint (limites.l5,limites.l7);
-	CvPoint pt8=CvPoint (limites.l6,limites.l8);
+	CvPoint pt1=cvPoint (limites.l1,limites.l3);
+	CvPoint pt2=cvPoint (limites.l2,limites.l4);
+	CvPoint pt3=cvPoint (limites.l5,limites.l2);
+	CvPoint pt4=cvPoint (limites.l6,limites.l1);
+	CvPoint pt5=cvPoint (limites.l9,limites.l3);
+	CvPoint pt6=cvPoint (limites.l10,limites.l4);
+	CvPoint pt7=cvPoint (limites.l5,limites.l7);
+	CvPoint pt8=cvPoint (limites.l6,limites.l8);
 
 	if(*zone==0)
 	{
