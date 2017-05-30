@@ -1,0 +1,92 @@
+\hypertarget{outils__libre_8h}{\section{outils\-\_\-libre.\-h File Reference}
+\label{outils__libre_8h}\index{outils\-\_\-libre.\-h@{outils\-\_\-libre.\-h}}
+}
+
+
+Fichier utiles pour le pgramme de la figure libre.  
+
+
+{\ttfamily \#include $<$stdio.\-h$>$}\\*
+{\ttfamily \#include $<$stdlib.\-h$>$}\\*
+{\ttfamily \#include \char`\"{}opencv2/opencv.\-hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}opencv2/core/core.\-hpp\char`\"{}}\\*
+{\ttfamily \#include $<$time.\-h$>$}\\*
+{\ttfamily \#include $<$unistd.\-h$>$}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structball}{ball}
+\begin{DoxyCompactList}\small\item\em Structure de la balle. \end{DoxyCompactList}\item 
+struct \hyperlink{structdonneesImg}{donnees\-Img}
+\item 
+struct \hyperlink{struct__t__Coord}{\-\_\-t\-\_\-\-Coord}
+\item 
+struct \hyperlink{struct__t__lim}{\-\_\-t\-\_\-lim}
+\item 
+struct \hyperlink{structT__mot}{T\-\_\-mot}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{outils__libre_8h_afb0c86ff7738e0728e87e6289c8dd3bf}{typedef struct \hyperlink{structball}{ball} {\bfseries t\-\_\-ball}}\label{outils__libre_8h_afb0c86ff7738e0728e87e6289c8dd3bf}
+
+\item 
+\hypertarget{outils__libre_8h_a0ef10256389a8ba07b70f15a97061c0f}{typedef struct \hyperlink{structdonneesImg}{donnees\-Img} {\bfseries t\-\_\-d\-Img}}\label{outils__libre_8h_a0ef10256389a8ba07b70f15a97061c0f}
+
+\item 
+\hypertarget{outils__libre_8h_add6c30a1b65a6a94962e9c6f03714704}{typedef struct \hyperlink{struct__t__Coord}{\-\_\-t\-\_\-\-Coord} {\bfseries t\-\_\-\-Coord}}\label{outils__libre_8h_add6c30a1b65a6a94962e9c6f03714704}
+
+\item 
+\hypertarget{outils__libre_8h_abadde6f71545037c3a2868d02273b823}{typedef struct \hyperlink{struct__t__lim}{\-\_\-t\-\_\-lim} {\bfseries t\-\_\-lim}}\label{outils__libre_8h_abadde6f71545037c3a2868d02273b823}
+
+\item 
+\hypertarget{outils__libre_8h_a615e75255ba4d192949b5e141d21c6c4}{typedef enum \-\_\-t\-\_\-zone {\bfseries t\-\_\-zone}}\label{outils__libre_8h_a615e75255ba4d192949b5e141d21c6c4}
+
+\item 
+\hypertarget{outils__libre_8h_a35304e04f08dc417d4c5c56de2291833}{typedef struct \hyperlink{structT__mot}{T\-\_\-mot} {\bfseries t\-\_\-mot}}\label{outils__libre_8h_a35304e04f08dc417d4c5c56de2291833}
+
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum {\bfseries \-\_\-t\-\_\-zone} \{ \\*
+{\bfseries aucune} =0, 
+{\bfseries gauche} =1, 
+{\bfseries haut} =2, 
+{\bfseries droite} =3, 
+\\*
+{\bfseries bas} =4, 
+{\bfseries zoom} =5
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{outils__libre_8h_aca63fcd0db19e4bcf5cf48e8a51f1910}{\hyperlink{structt__Coord}{t\-\_\-\-Coord} $\ast$ {\bfseries creer\-\_\-buffer} (int taille)}\label{outils__libre_8h_aca63fcd0db19e4bcf5cf48e8a51f1910}
+
+\item 
+\hypertarget{outils__libre_8h_a34f52468f7544cc5e0bcf4bab24f180a}{void {\bfseries modif\-\_\-buffer} (int i, \hyperlink{structt__Coord}{t\-\_\-\-Coord} $\ast$buffer, Cv\-Point object\-Pos)}\label{outils__libre_8h_a34f52468f7544cc5e0bcf4bab24f180a}
+
+\item 
+\hypertarget{outils__libre_8h_a1cc127b950080538bd145f5cdc2eb584}{void {\bfseries tracer\-\_\-mouv} (\hyperlink{structt__Coord}{t\-\_\-\-Coord} $\ast$buffer, Ipl\-Image $\ast$image, int index, int nb\-Pos)}\label{outils__libre_8h_a1cc127b950080538bd145f5cdc2eb584}
+
+\item 
+\hypertarget{outils__libre_8h_acbbdc8fe9f2384c01978bfb4a7511a14}{void {\bfseries afficher\-\_\-zone} (Ipl\-Image $\ast$image, t\-\_\-zone $\ast$zone, \hyperlink{structt__lim}{t\-\_\-lim} limites)}\label{outils__libre_8h_acbbdc8fe9f2384c01978bfb4a7511a14}
+
+\item 
+\hypertarget{outils__libre_8h_a464bd466b14d5fcb80711c8d937cf77f}{int {\bfseries mot\-Valide} (\hyperlink{structt__mot}{t\-\_\-mot} $\ast$mot\-M, char $\ast$tentative\mbox{[}$\,$\mbox{]})}\label{outils__libre_8h_a464bd466b14d5fcb80711c8d937cf77f}
+
+\item 
+\hypertarget{outils__libre_8h_a294587294111bfede1e11bdf876b6d10}{void \hyperlink{outils__libre_8h_a294587294111bfede1e11bdf876b6d10}{vider\-Buffer} ()}\label{outils__libre_8h_a294587294111bfede1e11bdf876b6d10}
+
+\begin{DoxyCompactList}\small\item\em Fonction qui permet de vider le buffer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Fichier utiles pour le pgramme de la figure libre. \begin{DoxyAuthor}{Author}
+Antoine Milot -\/ Tiphaine Diot 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+Avril/\-Mai 2017
+\end{DoxyDate}
+On peut trouver des structures très similaire à celles dans outils\-\_\-impo 

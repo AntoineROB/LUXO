@@ -1,0 +1,107 @@
+\hypertarget{libre_8c}{\section{libre.\-c File Reference}
+\label{libre_8c}\index{libre.\-c@{libre.\-c}}
+}
+
+
+Fichier principal pour la figure libre du Projet C Pan-\/tilt.  
+
+
+{\ttfamily \#include \char`\"{}outils\-\_\-libre.\-h\char`\"{}}\\*
+{\ttfamily \#include $<$cstdlib$>$}\\*
+{\ttfamily \#include $<$S\-F\-M\-L/\-Graphics.\-hpp$>$}\\*
+{\ttfamily \#include $<$S\-F\-M\-L/\-Window.\-hpp$>$}\\*
+{\ttfamily \#include $<$S\-F\-M\-L/\-Audio.\-hpp$>$}\\*
+{\ttfamily \#include $<$pthread.\-h$>$}\\*
+{\ttfamily \#include $<$string.\-h$>$}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structT__image}{T\-\_\-image}
+\item 
+struct \hyperlink{structT__map}{T\-\_\-map}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{libre_8c_affe776513b24d84b39af8ab0930fef7f}{\#define {\bfseries max}(a, b)~((a) $>$ (b) ? (a) \-: (b))}\label{libre_8c_affe776513b24d84b39af8ab0930fef7f}
+
+\item 
+\hypertarget{libre_8c_ac6afabdc09a49a433ee19d8a9486056d}{\#define {\bfseries min}(a, b)~((a) $<$ (b) ? (a) \-: (b))}\label{libre_8c_ac6afabdc09a49a433ee19d8a9486056d}
+
+\item 
+\hypertarget{libre_8c_a3aa069ac3980707dae1e0530f50d59e4}{\#define {\bfseries abs}(x)~((x) $>$ 0 ? (x) \-: -\/(x))}\label{libre_8c_a3aa069ac3980707dae1e0530f50d59e4}
+
+\item 
+\hypertarget{libre_8c_ac740756f75e53153605d2702b30d2a9d}{\#define {\bfseries sign}(x)~((x) $>$ 0 ? 1 \-: -\/1)}\label{libre_8c_ac740756f75e53153605d2702b30d2a9d}
+
+\item 
+\hypertarget{libre_8c_a560eb1ca0807e463d7f7dddadf4ab339}{\#define {\bfseries S\-T\-E\-P\-\_\-\-M\-I\-N}~5}\label{libre_8c_a560eb1ca0807e463d7f7dddadf4ab339}
+
+\item 
+\hypertarget{libre_8c_afb1629f78e781dc38b5ded85f69928eb}{\#define {\bfseries S\-T\-E\-P\-\_\-\-M\-A\-X}~100}\label{libre_8c_afb1629f78e781dc38b5ded85f69928eb}
+
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{libre_8c_a1558fcddc67356fe262bc439bed97bbb}{typedef struct \hyperlink{structT__image}{T\-\_\-image} {\bfseries t\-\_\-image}}\label{libre_8c_a1558fcddc67356fe262bc439bed97bbb}
+
+\item 
+\hypertarget{libre_8c_af0bf94490262d603baaaa4596ccb4f06}{typedef struct \hyperlink{structT__map}{T\-\_\-map} {\bfseries t\-\_\-map}}\label{libre_8c_af0bf94490262d603baaaa4596ccb4f06}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{libre_8c_a429c582312b10fabc36add54985e5c71}{Cv\-Point {\bfseries binarisation} (Ipl\-Image $\ast$image, int $\ast$nb\-Pixels)}\label{libre_8c_a429c582312b10fabc36add54985e5c71}
+
+\item 
+\hypertarget{libre_8c_a6dd875ade073a35dcc206794f881a1d8}{void {\bfseries add\-Object\-To\-Video} (Ipl\-Image $\ast$image, Cv\-Point object\-Next\-Pos, int nb\-Pixels)}\label{libre_8c_a6dd875ade073a35dcc206794f881a1d8}
+
+\item 
+\hypertarget{libre_8c_addbdbd97b95d177be72cd651b952aec4}{void {\bfseries get\-Object\-Color} (int event, int x, int y, int flags, void $\ast$param)}\label{libre_8c_addbdbd97b95d177be72cd651b952aec4}
+
+\item 
+\hypertarget{libre_8c_a1bc48f911b4a036cd9e40778de781bc5}{void {\bfseries get\-Coord\-Centre} (Ipl\-Image $\ast$image, \hyperlink{structt__Coord}{t\-\_\-\-Coord} $\ast$centre\-Img)}\label{libre_8c_a1bc48f911b4a036cd9e40778de781bc5}
+
+\item 
+\hypertarget{libre_8c_a82a4e45ca85beb4124d105fdf26fd73d}{void {\bfseries verif\-\_\-zone} (\hyperlink{structt__Coord}{t\-\_\-\-Coord} $\ast$buffer, Ipl\-Image $\ast$image, int i, int nb\-Pos, \hyperlink{structt__lim}{t\-\_\-lim} limites, t\-\_\-zone $\ast$zone, \hyperlink{structt__image}{t\-\_\-image} $\ast$scene\-\_\-courante)}\label{libre_8c_a82a4e45ca85beb4124d105fdf26fd73d}
+
+\item 
+\hypertarget{libre_8c_ab4b0e0b920e07a5fe1f56495a2355682}{void $\ast$ {\bfseries opencv\-\_\-routine} (void $\ast$dats)}\label{libre_8c_ab4b0e0b920e07a5fe1f56495a2355682}
+
+\item 
+\hypertarget{libre_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}{int {\bfseries main} ()}\label{libre_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{libre_8c_a50c401d9f2e3a164c7d3dceb70b18771}{Ipl\-Image $\ast$ {\bfseries image}}\label{libre_8c_a50c401d9f2e3a164c7d3dceb70b18771}
+
+\item 
+\hypertarget{libre_8c_a65ab858190e390150a9b047f5aa541cf}{Cv\-Point {\bfseries object\-Pos} = cv\-Point(-\/1, -\/1)}\label{libre_8c_a65ab858190e390150a9b047f5aa541cf}
+
+\item 
+\hypertarget{libre_8c_a16611451551e3d15916bae723c3f59f7}{int {\bfseries h} = 0}\label{libre_8c_a16611451551e3d15916bae723c3f59f7}
+
+\item 
+\hypertarget{libre_8c_a339d22b3e442946380f98ed19e320db2}{int {\bfseries s} = 0}\label{libre_8c_a339d22b3e442946380f98ed19e320db2}
+
+\item 
+\hypertarget{libre_8c_ac8859e8c1ce357c4c8b37bbb1936ba1c}{int {\bfseries v} = 0}\label{libre_8c_ac8859e8c1ce357c4c8b37bbb1936ba1c}
+
+\item 
+\hypertarget{libre_8c_a7ad93b0f37b070ae763a5d95bca08ce4}{int {\bfseries tolerance} = 10}\label{libre_8c_a7ad93b0f37b070ae763a5d95bca08ce4}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Fichier principal pour la figure libre du Projet C Pan-\/tilt. \begin{DoxyAuthor}{Author}
+Antoine Milot -\/ Tiphaine Diot 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+Avril/\-Mai 2017
+\end{DoxyDate}
+Ce fichier comprant des structures et des fonctions utiles au projet pour la figure libre. 
