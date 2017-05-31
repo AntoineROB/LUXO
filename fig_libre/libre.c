@@ -105,6 +105,7 @@ t_zone *zone=(t_zone*)malloc(sizeof(t_zone));
 t_lim limites;
 int FLAG=-1;
 t_image *scene_courante;
+int compteur2=0;
 
 /********FONCTION TRAITEMENT D'IMAGES CAMERA***********/
 
@@ -462,7 +463,7 @@ void* opencv_routine(void *dats)
   cvNamedWindow("Luxo Color Tracking", CV_WINDOW_AUTOSIZE);
   cvNamedWindow("Luxo Mask", CV_WINDOW_AUTOSIZE);
   cvMoveWindow("Luxo Color Tracking", 0, 100);
-  cvMoveWindow("Luxo Mask", 650, 100); 
+  cvMoveWindow("Luxo Mask", 1300, 100); 
 
   // Mouse event to select the tracked color on the original image
   cvSetMouseCallback("Luxo Color Tracking", getObjectColor);
@@ -504,7 +505,9 @@ void* opencv_routine(void *dats)
 		    {
 		     	tracer_mouv(buffer, image, indx, nbPos);
 		    }
+			
 			cpt++;
+			compteur2++;
 
 			/* On cherche la zone où on se trouve et on les affiches sur l'image capturée */
 			verif_zone(buffer,image, indx%nbPos, nbPos,limites,zone,scene_courante);
@@ -525,9 +528,11 @@ void* opencv_routine(void *dats)
 
 int main()
 {
+
 	
 	//On crée la fenêtre du projet
 	sf::RenderWindow ecran(VideoMode(640, 480, 32), " Projet Milot-Diot ");
+	ecran.setPosition(sf::Vector2i(650, 100));
 	
 	
 	/*------------------------CREATION MAP + IMAGES, EDIFICATION DES LIENS -------------------------*/
@@ -622,7 +627,7 @@ int main()
 		tI_messageInd.left=&tI_chambre;
 		tI_messageInd.right=&tI_chambre;
 		tI_messageInd.up=&tI_chambre;
-		tI_messageInd.down=&tI_chambre;
+		//tI_messageInd.down=&tI_chambre; En fonction de l'image précédente on ne va pas revenir dans la même image
 		compt_glob++;
 	}
 
@@ -689,7 +694,7 @@ int main()
 		compt_glob++;
 	}
 
-	/*Texture 6 ; visions de la chambre*/
+	/*Texture 6 ; vision de la chambre*/
 	Texture I_chambre;
 	Sprite S_chambre;
 	if (!(I_chambre.loadFromFile("chambre_dir.jpg"))) // Si le chargement du fichier a échoué
@@ -899,6 +904,7 @@ int main()
 
 	//On commence par initialiser toutes les variables utiles
 	scene_courante=AppartAntoine->head;
+	int ancien_num=-1; //Cette variable va être utile pour gérer les liens avec tI_messageInd qui en fonction de l'image précédente ne va pas retourner dans le même sprite avec la commande DOWN
 	char motRentre[5];
 	int exitAutorisee=-1; //Par défaut on ne peut pas sortir, si on passe à 0 c'est qu'on a débloqué la sortie
 
@@ -949,88 +955,150 @@ int main()
 			}
 			else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
+				if(scene_courante->numero==9|| scene_courante->numero==8 || scene_courante->numero==6 || scene_courante->numero==7) 
+			    {
+			    	//Si on va vers le haut dans ces images, on va vers le messageInd, il faut donc enregistré l'ancienne image pour être sûre de revenir vers la même au retour
+			    	ancien_num=scene_courante->numero;
+			    }
 				scene_courante=scene_courante->up;
 			}
 			else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
-				scene_courante=scene_courante->down;
+				//Si on se trouve dans l'image messageInd on va se servir de ancien_num, on force le lien
+		    	if(scene_courante->numero==2)
+		    	{
+		    		if(ancien_num==9)
+		    		{
+		    			scene_courante=&tI_Ptele;
+		    		}
+		    		else if(ancien_num==8)
+		    		{
+		    			scene_courante=&tI_Pcuisine;
+		    		}
+		    		else if(ancien_num==6)
+		    		{
+		    			scene_courante=&tI_chambre;
+		    		}
+		    		else if(ancien_num==7)
+		    		{
+		    			scene_courante=&tI_Ptable;
+		    		}
+
+		    	}
+		    	else 
+		    	{
+		    		scene_courante=scene_courante->down;
+		    	}
 			}
 	    } //Fin boucle while event
 
-	    
-    	//On regarde si on se trouve dans l'image ou on peut rentrer le mot à trouver         
-        if(scene_courante->numero==1)
-        {
-        	//Dans ce cas si, on va demander au joueur de rentrer un mot et regarder s'il est valide
-        	ecran.clear();
-        	ecran.draw(S_messageE);
-        	ecran.display();
-		    printf("Vous pensez pouvoir sortir ??\n");
-		    printf("Vous avez %d chances\n", tM_mystere->nb_chances);
-		    printf("Alors quel est le mot mystère ?\n");
-		    scanf("%c",&motRentre[0]);
-		    scanf("%c",&motRentre[1]);
-		    scanf("%c",&motRentre[2]);
-		    scanf("%c",&motRentre[3]);
-		    scanf("%c",&motRentre[4]);
-
-		   	//fgets(*motRentre, 5, stdin); //permet de rentrer une chaine de 5 caractères
-	    	printf("Avant vide Buffer\n");
-
-	    	viderBuffer(); //On vide le buffer pour la prochaine execution
-
-	       	//On appelle ensuite la fonction qui va nous permetttre de voir si le mot est valide
-	       	printf("Avant exitAutorisee\n");
-	       	exitAutorisee=motValide(tM_mystere,motRentre);
-	      	if(exitAutorisee==1) // On gère le résultat de la validation ou non du mot rentrer
-	       	{
-	       		printf("Vous avez réussi à trouver le mot mystère bien joué !\n");
-	       		RUN=0;
-	       		ecran.close();
-		    }
-		    else if(exitAutorisee==0)
-		    {
-		    	printf("\n\nVous avez choisi de ne pas faire de proposition !\n");
-		    	printf("Retourner au jeu pour continuer à chercher des indices ! \n");
-	     		scene_courante=scene_courante->down;
-	       	}
-	       	else if ((exitAutorisee==-1 && tM_mystere->nb_chances!=0))
-	       	{
-	       		printf("Ce n'est pas le mot mystère !!\n");
-	       		printf("Retourner au jeu pour continuer à chercher des indices ! \n");
-	     		scene_courante=scene_courante->down;
-	       	}
-		    else if(exitAutorisee==-1 && tM_mystere->nb_chances==0)
-		    {
-		    	printf("Vous avez perdu ! Dommage, c'est la fin pour vous...\n");
-		    	RUN=0;
-		    	ecran.close();
-		    }
-	    } 
-	    /* Si non, on va regarder dans quelle zone d'intérêt se trouve notre balle et naviguer entre les différentes images en fonction de ça*/
-	    /*Appeler la fonction qui permet de savoir dans quelle zone on se trouve*/
-	    if(*zone==zoom) //cette zone ne prends en compte que 3 images, la fonction qui nous permet de trouver la zone gère directement les cas
+	    if(compteur2>30)
 	    {
-			scene_courante=scene_courante->indice;
-	    } 
-	    else if(*zone==gauche)
-	    {
-			scene_courante=scene_courante->left;
+	    	//On regarde si on se trouve dans l'image ou on peut rentrer le mot à trouver         
+	        if(scene_courante->numero==1)
+	        {
+	        	//Dans ce cas si, on va demander au joueur de rentrer un mot et regarder s'il est valide
+	        	ecran.clear();
+	        	ecran.draw(S_messageE);
+	        	ecran.display();
+			    printf("Vous pensez pouvoir sortir ??\n");
+			    printf("Vous avez %d chances\n", tM_mystere->nb_chances);
+			    printf("Alors quel est le mot mystère ?\n");
+			    scanf("%c",&motRentre[0]);
+			    scanf("%c",&motRentre[1]);
+			    scanf("%c",&motRentre[2]);
+			    scanf("%c",&motRentre[3]);
+			    scanf("%c",&motRentre[4]);
+
+			   	//fgets(*motRentre, 5, stdin); //permet de rentrer une chaine de 5 caractères
+		    	printf("Avant vide Buffer\n");
+
+		    	viderBuffer(); //On vide le buffer pour la prochaine execution
+
+		       	//On appelle ensuite la fonction qui va nous permetttre de voir si le mot est valide
+		       	printf("Avant exitAutorisee\n");
+		       	exitAutorisee=motValide(tM_mystere,motRentre);
+		      	if(exitAutorisee==1) // On gère le résultat de la validation ou non du mot rentrer
+		       	{
+		       		printf("Vous avez réussi à trouver le mot mystère bien joué !\n");
+		       		RUN=0;
+		       		ecran.close();
+			    }
+			    else if(exitAutorisee==0)
+			    {
+			    	printf("\n\nVous avez choisi de ne pas faire de proposition !\n");
+			    	printf("Retourner au jeu pour continuer à chercher des indices ! \n");
+		     		scene_courante=scene_courante->down;
+		       	}
+		       	else if ((exitAutorisee==-1 && tM_mystere->nb_chances!=0))
+		       	{
+		       		printf("Ce n'est pas le mot mystère !!\n");
+		       		printf("Retourner au jeu pour continuer à chercher des indices ! \n");
+		     		scene_courante=scene_courante->down;
+		       	}
+			    else if(exitAutorisee==-1 && tM_mystere->nb_chances==0)
+			    {
+			    	printf("Vous avez perdu ! Dommage, c'est la fin pour vous...\n");
+			    	RUN=0;
+			    	ecran.close();
+			    }
+		    } 
+		    /* Si non, on va regarder dans quelle zone d'intérêt se trouve notre balle et naviguer entre les différentes images en fonction de ça*/
+		    /*Appeler la fonction qui permet de savoir dans quelle zone on se trouve*/
+		    if(*zone==zoom) //cette zone ne prends en compte que 3 images, la fonction qui nous permet de trouver la zone gère directement les cas
+		    {
+				scene_courante=scene_courante->indice;
+		    } 
+		    else if(*zone==gauche)
+		    {
+				scene_courante=scene_courante->left;
+			}
+			else if(*zone==droite)
+			{
+				scene_courante=scene_courante->right;
+		    }
+		    else if(*zone==haut)
+			{
+			    if(scene_courante->numero==9|| scene_courante->numero==8 || scene_courante->numero==6 || scene_courante->numero==7) 
+			    {
+			    	//Si on va vers le haut dans ces images, on va vers le messageInd, il faut donc enregistré l'ancienne image pour être sûre de revenir vers la même au retour
+			    	ancien_num=scene_courante->numero;
+			    }
+			    scene_courante=scene_courante->up;
+		    }
+		    else if(*zone==bas)
+		    {
+		    	
+		    	//Si on se trouve dans l'image messageInd on va se servir de ancien_num, on force le lien
+		    	if(scene_courante->numero==2)
+		    	{
+		    		if(ancien_num==9)
+		    		{
+		    			scene_courante=&tI_Ptele;
+		    		}
+		    		else if(ancien_num==8)
+		    		{
+		    			scene_courante=&tI_Pcuisine;
+		    		}
+		    		else if(ancien_num==6)
+		    		{
+		    			scene_courante=&tI_chambre;
+		    		}
+		    		else if(ancien_num==7)
+		    		{
+		    			scene_courante=&tI_Ptable;
+		    		}
+
+		    	}
+		    	else 
+		    	{
+		    		scene_courante=scene_courante->down;
+		    	}
+		    }
+		    
+		    *zone=aucune;
+		    compteur2=0;
 		}
-		else if(*zone==droite)
-		{
-			scene_courante=scene_courante->right;
-	    }
-	    else if(*zone==haut)
-		{
-		    scene_courante=scene_courante->up;
-	    }
-	    else if(*zone==bas)
-	    {
-	    	scene_courante=scene_courante->down;
-	    }
-	    
-	    *zone=aucune;
 		            
 		// Clean de la fenêtre d'affichage
 		ecran.clear();
@@ -1046,17 +1114,18 @@ int main()
 
 	}//fin while ecran fermé
 
+
 	// Destroy the windows we have created
     cvDestroyWindow("Luxo Color Tracking");
     cvDestroyWindow("Luxo Mask");
  
     // Destroy the capture
-    cvReleaseCapture(&capture);    
-		    
+    cvReleaseCapture(&capture); 		    
 		    
 	free(AppartAntoine);
     free(zone);
     free(centreImg);
+    free(buffer);
     
     return 0;
 }
