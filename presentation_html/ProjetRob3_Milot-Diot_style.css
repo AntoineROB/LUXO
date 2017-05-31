@@ -21,9 +21,9 @@ header
 
 body
 {
-    background-image: url("fond3.jpg");
+    background-image: url("fond4.jpg");
     background-attachment: fixed; /* Le fond restera fixe */
-    color: black; /* Le texte de la page sera blanc */
+    color: white; /* Le texte de la page sera blanc */
     font-family: Verdana, sans-serif;
 }
 
