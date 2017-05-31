@@ -12,7 +12,6 @@
        
 
         <header>
-			<td> <img classe="imgEscape" src="escape.png" alt="EscapeGame" /> </td>
 			<h1>         Projet Camera - ROB3</h1> 
 			<h2>  Antoine Milot et Tiphaine Diot </h2>
 		</header>
@@ -54,36 +53,28 @@
 		<section>
 		<h3>Figure Imposée </h3>  
 			<p> La caméra suit une boule de couleur, et la place constamment au centre de l'image</p>
-			<p> Ce programme est divisé en plusieurs étapes. <br>
-			    La première est uniquement la récupération du flux vidéo de la caméra grâce à la librairie openCV. <br>
-			    Nous avons ensuite utilisé des fonctions de la librairie pour binariser l'image obtenue, et ajouter un objet dont on récupère la couleur en cliquant dessus. <br>
-			    Nous récupérons le barycentre de l'object, puis nous la plaçons en ajoutant un incrément à la position des moteurs pour qu'ils placent la balle au centre de l'image.<br>
-			</p>
 		</section>
 
 		<section>
 		<h3> Figure Libre </h3>  
 			<p> 
-				Dans cette partie du projet, nous allons mettre en place un jeu du style escape game virtuel. 
+				Dans cette partie du projet, nous allons mettre en place un jeu du style labyrinthe. 
 			</p>
 			
 			<h4> L'environnement du jeu </h4>
 				<p>
 					L'environnement du jeu est composé de 3 pièces photographiées selon différents angles.<br>
 					Le but du jeu est de se déplacer dans les 3 pièces pour trouver des indices qui permettent de trouver un mot. <br>
-					Il existe 3 indices cachés.
-					Le jeu est composé de différentes zones d'intérêt qui nous permettent soient de nous déplacer soient de trouver un indice.
 				</p>
 
 			<h4> Comment se déplacer ? </h4>
 				<p>
-					Le joueur disposera d'une balle de couleur. Il doit placer la balle sur les flèches oranges ou carré vert de l'image de la caméra (zones d'intérêt) devant la caméra.<br>
+					Le joueur disposera d'une balle de couleur. Il doit placer la balle sur les flèches oranges (zones d'intérêt) devant la caméra.<br>
 				</p>
 			<h4> Comment trouver les indices ?</h4>
 				<p>
 					Le joueur doit parcourir la photo affichée en déplacant la balle devant la caméra. Quand la balle se trouve sur une zone d'intérêt associée à un indice, une nouvelle photo s'affiche.<br>
 					Il faut parcourir assez lentement la photo. <br>
-					Ces zones d'intérêt ne sont pas indiquées sur l'image contrairement aux zones d'intérêt de déplacement. 
 
 				</p>
 			<h4> Comment sortir du jeu ? </h4>
@@ -91,7 +82,6 @@
 					Pour sortir du jeu, il faut se mettre devant la porte et se diriger vers elle. <br>
 					Mais ce n'est pas aussi simple, à ce moment là, une image rappelant les règles s'affiche. 
 					Cela permet aussi de rentrer une chaine de caractère dans le terminal. Cette chaine de caractère doit correspondre au mot mystère qu'il faut deviner grâce aux indices.<br> 
-					Le joueur dispose de trois chances, et peut écrire un mot "later" pour indiquer qu'il ne veut pas faire de tentatives tout de suite. <br>
 				</p>
 
 			<h4> Planning des démos à réaliser </h4>
@@ -141,3 +131,8 @@
 <h4> </h4> 
 <h5> </h5> 
 <h6> </h6> -->
+
+<!-- Différentes façon de rendre important le texte 
+<strong>soyez indulgents</strong>
+<mark>soyez indulgents</mark>
+<em></em> -->

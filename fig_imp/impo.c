@@ -143,8 +143,9 @@ void addObjectToVideo(IplImage* image, CvPoint objectNextPos, int nbPixels) {
     if (nbPixels > 10)
         cvDrawCircle(image, objectPos, 15, CV_RGB(255, 0, 0), -1);
  
-    // We show the image on the window
-    cvShowImage("Luxo Color Tracking", image);
+    
+        // We show the image on the window
+        cvShowImage("Luxo Color Tracking", image);
  
 }
 
@@ -220,7 +221,7 @@ int main() {
     // Next position of the object we overlay
     CvPoint objectNextPos;
     // On initialise le flux vidéo par rapport à la camera 0 ou 1
-    capture = cvCreateCameraCapture(0);
+    capture = cvCreateCameraCapture(1);
     // Check if the capture is ok
         if (!capture) {
         printf("Can't initialize the video capture.\n");
@@ -283,7 +284,7 @@ int main() {
 	      
 	     getCoordCentre(image, centreImg);
 	     
-	     if(compteur<500)
+	     if(compteur>=0)
 	     {
 	     
 		 
@@ -332,8 +333,9 @@ int main() {
 			printf("%d,%d\n", (int) servo_old[0], (int) servo_old[1]);
 			fprintf(control_servo, "%d,%d\n", (int) servo_old[0],(int) servo_old[1]);
 		}
+        compteur++;
 			  
-          key = cvWaitKey(10);
+        key = cvWaitKey(10);
 		 
 	}//Fin while
 	

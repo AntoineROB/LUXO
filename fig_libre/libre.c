@@ -1010,13 +1010,11 @@ int main()
 			    scanf("%c",&motRentre[3]);
 			    scanf("%c",&motRentre[4]);
 
-			   	//fgets(*motRentre, 5, stdin); //permet de rentrer une chaine de 5 caractères
-		    	printf("Avant vide Buffer\n");
+			  
 
 		    	viderBuffer(); //On vide le buffer pour la prochaine execution
 
 		       	//On appelle ensuite la fonction qui va nous permetttre de voir si le mot est valide
-		       	printf("Avant exitAutorisee\n");
 		       	exitAutorisee=motValide(tM_mystere,motRentre);
 		      	if(exitAutorisee==1) // On gère le résultat de la validation ou non du mot rentrer
 		       	{
