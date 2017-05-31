@@ -4,12 +4,11 @@ table
 	width:100%;
 }
 
-td
+imghead
 { 
-	border-width:10%;
-	padding-left: 5%;
-	padding-right: 5%;
-	width:50%;
+	display:block;
+	margin-left: 300px;
+	margin-right:auto;
 }
 
 header
